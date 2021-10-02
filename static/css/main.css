@@ -53,3 +53,7 @@ div.error::before {
     visibility: hidden;
     height: 0;
 }
+
+.add-new-status-button.invisible {
+
+}

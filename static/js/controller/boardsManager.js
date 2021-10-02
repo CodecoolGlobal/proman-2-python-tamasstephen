@@ -26,6 +26,7 @@ export let boardsManager = {
 export function showHideButtonHandler(clickEvent) {
   const boardId = clickEvent.target.dataset.boardId;
   document.querySelector(`.status-container[data-board-id="${boardId}"]`).classList.toggle("invisible");
+  document.querySelector(`.add-new-status-button[data-board-id="${boardId}"]`).classList.toggle("invisible");
 }
 
 

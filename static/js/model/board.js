@@ -84,8 +84,6 @@ async function connectStatusWithBoard(statusId, boardId){
   } else {
     console.log("Could not connect board to status")
   }
-
-
 }
 
 function removeBoard(board){
