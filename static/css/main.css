@@ -4,6 +4,11 @@
 }
 
 
+#root {
+    width: 90%;
+    margin: 0 auto;
+}
+
 
 #boards {
     background-color: green;
@@ -46,5 +51,5 @@ div.error::before {
 .invisible {
     opacity: 0;
     visibility: hidden;
-    transition-duration: .5s;
+    height: 0;
 }

@@ -21,7 +21,7 @@ function boardBuilder(board) {
                     <div class="board" data-board-id=${board.id}>${board.title}</div>
                     <button class="toggle-board-button" data-board-id="${board.id}">Show Cards</button>
                 </div>
-                <div class="status-container invisible" data-board-id="${board.id}"></div>
+                <div class="status-container" data-board-id="${board.id}" hidden></div>
             </div>`;
 }
 
