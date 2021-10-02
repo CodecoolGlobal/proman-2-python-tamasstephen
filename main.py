@@ -44,12 +44,25 @@ def create_new_board():
     return queires.create_new_board(title)
 
 
+@app.route("/api/get_statuses")
+@json_response
+def get_statuses():
+    return queires.get_statuses()
+
+
 @app.route("/api/get_statuses/<int:board_id>")
 @json_response
 def get_statuses_by_id(board_id):
     status_ids = [status['status_id'] for status in queires.get_statuses_by_board_id(board_id)]
     statuses_by_name_and_id = queires.get_statuses_by_status_id(status_ids)
     return statuses_by_name_and_id
+
+
+@app.route("/api/status_to_board", methods=["POST"])
+@json_response
+def bind_status_to_board():
+    data = request.get_json()
+    return queires.connect_status_with_board(data)
 
 
 def main():

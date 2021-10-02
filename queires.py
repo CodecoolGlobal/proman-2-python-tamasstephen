@@ -69,12 +69,33 @@ def get_statuses_by_board_id(board_id):
     return data_manager.execute_select(query)
 
 
+def get_statuses():
+    return data_manager.execute_select("""
+        select * from statuses 
+    """)
+
+
 def get_statuses_by_status_id(arr):
     query = sql.SQL("""
         select * from statuses 
         where id = any({arr}) 
     """).format(arr=sql.Literal(arr))
     return data_manager.execute_select(query)
+
+
+def connect_status_with_board(data):
+    query = sql.SQL("""
+        insert into status_board
+        (status_id, board_id)
+        values ({status_id}, {board_id})
+        returning *
+    """).format(status_id=sql.Literal(data["status_id"]),
+                board_id=sql.Literal(data["board_id"]))
+    return data_manager.execute_select(query)
+
+
+
+
 
 
 

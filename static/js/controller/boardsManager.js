@@ -1,7 +1,6 @@
 import { dataHandler } from "../data/dataHandler.js";
 import { htmlFactory, htmlTemplates } from "../view/htmlFactory.js";
 import { domManager } from "../view/domManager.js";
-import { cardsManager } from "./cardsManager.js";
 import { addNewBoard } from "../model/board.js";
 import statusBoardManager from "./statusManager.js";
 
@@ -24,7 +23,7 @@ export let boardsManager = {
   },
 };
 
-function showHideButtonHandler(clickEvent) {
+export function showHideButtonHandler(clickEvent) {
   const boardId = clickEvent.target.dataset.boardId;
   document.querySelector(`.status-container[data-board-id="${boardId}"]`).classList.toggle("invisible");
 }

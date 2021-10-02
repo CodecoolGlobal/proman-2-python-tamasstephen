@@ -7,6 +7,9 @@ export let dataHandler = {
     // the board is retrieved and then the callback function is called with the board
   },
   getStatuses: async function () {
+    const response = await fetch("/api/get_statuses")
+    return response;
+
     // the statuses are retrieved and then the callback function is called with the statuses
   },
   getStatus: async function (statusId) {
@@ -34,6 +37,14 @@ export let dataHandler = {
   },
   getStatusesByBoardId: async function(boardId){
     const response = await fetch(`/api/get_statuses/${boardId}`);
+    return response
+  },
+  bindStatusToBoard: async function(statusId, boardId){
+    const response = await fetch("/api/status_to_board", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({board_id: `${boardId}`, status_id: `${statusId}`})
+    })
     return response
   }
 };
