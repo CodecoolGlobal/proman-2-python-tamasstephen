@@ -34,7 +34,8 @@ function addNewBoard(){
   nameNewBoard();
 }
 
-//TODO: in the eventListener the .closest does not work, ask why
+//TODO: in the eventListener the .closest only works if we grab the element with the
+//TODO: -query selector, if we target the e.currentTarget it does nothing (we get null)
 function nameNewBoard(){
   const headline = document.querySelector('div[data-board-id="pending_board"]');
   headline.innerHTML = `<input type="text" name="board_name" id="name_new_board">`
@@ -44,7 +45,7 @@ function nameNewBoard(){
   wait(100).then(()=> document.body.addEventListener('click', clickOutside) )
 }
 
-function handleInputSaveName(e){
+async function handleInputSaveName(e){
   const board = document.querySelector('div [data-board-id="pending_board"]');
   if (e.key === "Escape"){
     removeBoard(board);
@@ -52,15 +53,15 @@ function handleInputSaveName(e){
   if(e.key === "Enter"){
    const newName = e.currentTarget.value;
    const button = document.querySelector('button[class="toggle-board-button"][data-board-id="pending_board"]')
-   // const input = document.querySelector("#name_new_board");
-   // console.log(input.closest("div")); // TODO: ask why it does not work if I save the current target, but it does if I pick it with the querySelector
    if (newName.length < 1 ){
      removeBoard(board);
    } else {
-     board.textContent = newName;
-     board.dataset.boardId = "dummy";
-     button.dataset.boardId = "dummy";
-     e.currentTarget.remove();
+     const boardDataResponse = await dataHandler.createNewBoard(newName);
+     const [boardId, boardName] = [boardDataResponse["id"], boardDataResponse["title"]]
+     board.textContent = boardName;
+     board.dataset.boardId = boardId;
+     button.dataset.boardId = boardId;
+     //e.currentTarget.remove(); //TODO: Why we don't need that?
      document.body.removeEventListener("click", clickOutside);
    }
   }
@@ -81,6 +82,8 @@ function clickOutside(e) {
   }
 }
 
+
+//util
 function wait(ms){
   return new Promise((resolve) => { return setTimeout(resolve, ms) });
 }

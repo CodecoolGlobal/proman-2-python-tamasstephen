@@ -1,4 +1,5 @@
 import data_manager
+from psycopg2 import sql
 
 
 def get_card_status(status_id):
@@ -47,3 +48,14 @@ def get_cards_for_board(board_id):
         , {"board_id": board_id})
 
     return matching_cards
+
+
+def create_new_board(title):
+    query = sql.SQL("""
+        INSERT INTO boards
+        (title)
+        VALUES ( {title} )
+        RETURNING id, title 
+    """).format(title=sql.Literal(title))
+    new_board = data_manager.execute_select(query, fetchall=False)
+    return new_board

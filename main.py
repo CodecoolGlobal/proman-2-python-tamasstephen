@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, request
 from dotenv import load_dotenv
 
 
@@ -35,6 +35,14 @@ def get_cards_for_board(board_id: int):
     :param board_id: id of the parent board
     """
     return queires.get_cards_for_board(board_id)
+
+
+@app.route("/api/create_board", methods=["POST"])
+@json_response
+def create_new_board():
+    title = request.get_json()["title"]
+    print(title)
+    return queires.create_new_board(title)
 
 
 def main():

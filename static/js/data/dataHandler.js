@@ -21,6 +21,13 @@ export let dataHandler = {
   },
   createNewBoard: async function (boardTitle) {
     // creates new board, saves it and calls the callback function with its data
+    const response = await fetch("/api/create_board", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({title: `${boardTitle}`})
+    })
+    console.log(response);
+    return await response.json();
   },
   createNewCard: async function (cardTitle, boardId, statusId) {
     // creates new card, saves it and calls the callback function with its data
