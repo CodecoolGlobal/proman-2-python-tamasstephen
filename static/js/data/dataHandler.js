@@ -32,6 +32,10 @@ export let dataHandler = {
   createNewCard: async function (cardTitle, boardId, statusId) {
     // creates new card, saves it and calls the callback function with its data
   },
+  getStatusesByBoardId: async function(boardId){
+    const response = await fetch(`/api/get_statuses/${boardId}`);
+    return response
+  }
 };
 
 async function apiGet(url) {

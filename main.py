@@ -45,6 +45,12 @@ def create_new_board():
     return queires.create_new_board(title)
 
 
+@app.route("/api/get_statuses/<int:board_id>")
+@json_response
+def get_statuses_by_id(board_id):
+    print(board_id)
+
+
 def main():
     app.run(debug=True)
 
