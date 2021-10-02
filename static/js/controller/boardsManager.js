@@ -47,6 +47,7 @@ function nameNewBoard(){
 
 async function handleInputSaveName(e){
   const board = document.querySelector('div [data-board-id="pending_board"]');
+  const myInput = document.querySelector("#name_new_board");
   if (e.key === "Escape"){
     removeBoard(board);
   }
@@ -54,8 +55,10 @@ async function handleInputSaveName(e){
    const newName = e.currentTarget.value;
    const button = document.querySelector('button[class="toggle-board-button"][data-board-id="pending_board"]')
    if (newName.length < 1 ){
-     removeBoard(board);
+     e.currentTarget.classList.add("error");
+     myInput.closest("div").classList.add("error");
    } else {
+     myInput.closest("div").classList.remove("error");
      const boardDataResponse = await dataHandler.createNewBoard(newName);
      const [boardId, boardName] = [boardDataResponse["id"], boardDataResponse["title"]]
      board.textContent = boardName;
