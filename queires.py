@@ -59,3 +59,44 @@ def create_new_board(title):
     """).format(title=sql.Literal(title))
     new_board = data_manager.execute_select(query, fetchall=False)
     return new_board
+
+
+def get_statuses_by_board_id(board_id):
+    query = sql.SQL("""
+    select status_id from status_board
+    where board_id = {board_id} 
+    """).format(board_id=sql.Literal(board_id))
+    return data_manager.execute_select(query)
+
+
+def get_statuses():
+    return data_manager.execute_select("""
+        select * from statuses 
+    """)
+
+
+def get_statuses_by_status_id(arr):
+    query = sql.SQL("""
+        select * from statuses 
+        where id = any({arr}) 
+    """).format(arr=sql.Literal(arr))
+    return data_manager.execute_select(query)
+
+
+def connect_status_with_board(data):
+    query = sql.SQL("""
+        insert into status_board
+        (status_id, board_id)
+        values ({status_id}, {board_id})
+        returning *
+    """).format(status_id=sql.Literal(data["status_id"]),
+                board_id=sql.Literal(data["board_id"]))
+    return data_manager.execute_select(query)
+
+
+
+
+
+
+
+
