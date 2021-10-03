@@ -1,6 +1,5 @@
 import util from "../util/util.js";
 import {dataHandler} from "../data/dataHandler.js";
-import {removeBoard} from "./board.js";
 
 export { createStatusBoxes, addNewStatus }
 
@@ -46,6 +45,8 @@ function createStatusBoxes(statusData, boardId){
                 myInput.closest("div").classList.remove("error");
                 console.log(myInput);
                 //TODO: 1. create new status
+                const statusResponse = await dataHandler.createNewStatus(newName);
+                console.log(await statusResponse.json());
                 //TODO: 2. bind new status to board
                 //TODO: 3. remove click outside event listener
                 //TODO: 4. fill headline with new name p - innerHTML newName

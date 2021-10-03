@@ -94,7 +94,14 @@ def connect_status_with_board(data):
     return data_manager.execute_select(query)
 
 
-
+def create_new_status(title):
+    query = sql.SQL("""
+        insert into statuses
+        (title)
+        values ({title})
+        returning * 
+    """).format(title=sql.Literal(title))
+    return data_manager.execute_select(query, fetchall=False)
 
 
 

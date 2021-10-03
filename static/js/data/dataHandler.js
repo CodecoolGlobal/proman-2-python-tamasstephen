@@ -29,7 +29,6 @@ export let dataHandler = {
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({title: `${boardTitle}`})
     })
-    console.log(response);
     return await response.json();
   },
   createNewCard: async function (cardTitle, boardId, statusId) {
@@ -45,6 +44,14 @@ export let dataHandler = {
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({board_id: `${boardId}`, status_id: `${statusId}`})
     })
+    return response
+  },
+  createNewStatus: async function(statusName){
+    const response = await fetch("/api/create_status", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({title: `${statusName}`}),
+    });
     return response
   }
 };
