@@ -65,6 +65,14 @@ def bind_status_to_board():
     return queires.connect_status_with_board(data)
 
 
+@app.route("/api/create_status", methods=["POST"])
+@json_response
+def create_new_status():
+    title = request.get_json()["title"]
+    print(title)
+    return queires.create_new_status(title)
+
+
 def main():
     app.run(debug=True)
 

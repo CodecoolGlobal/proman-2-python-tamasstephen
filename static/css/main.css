@@ -49,11 +49,20 @@ div.error::before {
 }
 
 .invisible {
+    transition-duration: .2s;
     opacity: 0;
     visibility: hidden;
     height: 0;
 }
 
-.add-new-status-button.invisible {
+.card {
+    width: 150px;
+    height: 80px;
+    border: 1px solid gray;
+    border-radius: 8px;
+    padding: .5rem;
+}
 
+.card + .card {
+    margin-top: .5rem;
 }

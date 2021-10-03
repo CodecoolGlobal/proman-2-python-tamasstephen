@@ -3,6 +3,7 @@ import { htmlFactory, htmlTemplates } from "../view/htmlFactory.js";
 import { domManager } from "../view/domManager.js";
 import { addNewBoard } from "../model/board.js";
 import statusBoardManager from "./statusManager.js";
+import {addNewStatus} from "../model/status.js";
 
 export let boardsManager = {
   loadBoards: async function () {
@@ -13,12 +14,16 @@ export let boardsManager = {
       const boardBuilder = htmlFactory(htmlTemplates.board);
       const content = boardBuilder(board);
       domManager.addChild("#root", content);
-      statusBoardManager(board);
+      await statusBoardManager(board);
       domManager.addEventListener(
         `.toggle-board-button[data-board-id="${board.id}"]`,
         "click",
         showHideButtonHandler
       );
+      domManager.addEventListener(
+          `.add-new-status-button[data-board-id="${board.id}"`,
+          'click',
+           addNewStatus)
     }
   },
 };
