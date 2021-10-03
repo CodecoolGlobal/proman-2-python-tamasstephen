@@ -6,7 +6,7 @@ import {createStatusBoxes} from "./status.js";
 import {showHideButtonHandler} from "../controller/boardsManager.js"
 
 
-export { addNewBoard }
+export { addNewBoard, removeBoard }
 
 
 function addNewBoard(){
@@ -55,9 +55,8 @@ async function setNewBoardData(board, button, data){
   board.dataset.boardId = boardId;
   button.dataset.boardId = boardId;
   board.closest(".board-container").querySelector(".status-container").dataset.boardId=boardId;
-  console.log(document.querySelector(`.toggle-board-button[data-board-id="${boardId}"]`));
   domManager.addEventListener(`.toggle-board-button[data-board-id="${boardId}"`, 'click', showHideButtonHandler);
-  return await setStatusBaseContent(board, boardId)
+  await setStatusBaseContent(board, boardId)
 }
 
 async function setStatusBaseContent(board, boardId) {
@@ -92,6 +91,7 @@ function removeBoard(board){
   document.body.removeEventListener("click", clickOutside);
 }
 
+// replace from util
 function clickOutside(e) {
   const input = document.querySelector("#name_new_board");
   if (e.target !== input) {
