@@ -32,12 +32,15 @@ const util = {
         return `<input type="text" name="${name}" id="${id}">`
     },
 
-    clickOutside(e) {
-    const input = document.querySelector("#name_new_board");
-    if (e.target !== input) {
-        removeBoard(input);
+    clickOutsideWrapper(targetElement, callback){
+        function clickOutside(e) {
+        const clickTarget = document.querySelector(targetElement);
+        if (e.target !== clickTarget) {
+            callback(clickTarget);
+        }
     }
-}
+    return clickOutside;
+    },
 }
 
 export default util

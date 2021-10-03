@@ -9,10 +9,13 @@ function addNewStatus(e){
     const boardId = e.target.dataset.boardId;
     const statusWrapper = document.querySelector(`.status-container[data-board-id="${boardId}"]`);
     const newStatus = createStatusBoxes({title: "", id: "pending-id"}, boardId);
+    const clickOutside = util.clickOutsideWrapper("#create-new-status-name");
     statusWrapper.appendChild(newStatus);
     newStatus.querySelector(".status-headline").innerHTML = util.createNewInput("status_name", "create-new-status-name");
     const myInput = document.querySelector("#create-new-status-name");
     myInput.addEventListener("keydown", handleInputSaveStatus);
+    myInput.focus()
+    util.wait(1).then(()=> document.body.addEventListener("click", clickOutsideStatus));
 }
 
 
@@ -32,8 +35,7 @@ function createStatusBoxes(statusData, boardId){
         const statusBox = document.querySelector('.status-box[data-status-id="pending-id"]');
         const myInput = document.querySelector("#create-new-status-name");
         if (e.key === "Escape"){
-            console.log("here");
-            removeElement(myInput, `.status-box[data-status-id="pending-id"]`);
+            removeStatusBox(myInput, `.status-box[data-status-id="pending-id"]`, clickOutsideStatus);
         }
         if(e.key === "Enter"){
             const newName = e.currentTarget.value;
@@ -43,19 +45,29 @@ function createStatusBoxes(statusData, boardId){
             } else {
                 myInput.closest("div").classList.remove("error");
                 console.log(myInput);
+                //TODO: 1. create new status
+                //TODO: 2. bind new status to board
+                //TODO: 3. remove click outside event listener
+                //TODO: 4. fill headline with new name p - innerHTML newName
+
                 //const boardDataResponse = await dataHandler.createNewBoard(newName); -> we have to create a new status
                 //await setElementCallback(statusBox, boardDataResponse);
-                //e.currentTarget.remove(); //TODO: Why we don't need that?
                 //document.body.removeEventListener("click", util.clickOutside);
             }
         }
     }
 
 
-function removeElement(element, parentString){
-    console.log(element, parentString)
+
+function removeStatusBox(element, parentString, callBack){
     const parentDiv = element.closest(parentString);
-    console.log(parentDiv);
     parentDiv.remove();
-    document.body.removeEventListener("click", util.clickOutside);
+    document.body.removeEventListener("click", callBack);
+}
+
+function clickOutsideStatus(e) {
+    const clickTarget = document.querySelector("#create-new-status-name");
+    if (e.target !== clickTarget) {
+        removeStatusBox(clickTarget, ".status-box", clickOutsideStatus);
+    }
 }

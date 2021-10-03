@@ -49,6 +49,7 @@ div.error::before {
 }
 
 .invisible {
+    transition-duration: .2s;
     opacity: 0;
     visibility: hidden;
     height: 0;
