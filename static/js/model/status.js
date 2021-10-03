@@ -3,7 +3,6 @@ import {dataHandler} from "../data/dataHandler.js";
 
 export { createStatusBoxes, addNewStatus }
 
-
 function addNewStatus(e){
     const boardId = e.target.dataset.boardId;
     const statusWrapper = document.querySelector(`.status-container[data-board-id="${boardId}"]`);
@@ -17,8 +16,6 @@ function addNewStatus(e){
     util.wait(1).then(()=> document.body.addEventListener("click", clickOutsideStatus));
 }
 
-
-
 // more of a html factory function
 function createStatusBoxes(statusData, boardId){
     const statusBox = document.createElement("div");
@@ -31,7 +28,7 @@ function createStatusBoxes(statusData, boardId){
 }
 
     async function handleInputSaveStatus(e){
-        const statusBox = document.querySelector('.status-box[data-status-id="pending-id"]');
+        const boardId = document.querySelector('.status-box[data-status-id="pending-id"]').dataset.boardId;
         const myInput = document.querySelector("#create-new-status-name");
         if (e.key === "Escape"){
             removeStatusBox(myInput, `.status-box[data-status-id="pending-id"]`, clickOutsideStatus);
@@ -43,22 +40,15 @@ function createStatusBoxes(statusData, boardId){
                 myInput.closest("div").classList.add("error");
             } else {
                 myInput.closest("div").classList.remove("error");
-                console.log(myInput);
-                //TODO: 1. create new status
                 const statusResponse = await dataHandler.createNewStatus(newName);
-                console.log(await statusResponse.json());
-                //TODO: 2. bind new status to board
-                //TODO: 3. remove click outside event listener
-                //TODO: 4. fill headline with new name p - innerHTML newName
-
-                //const boardDataResponse = await dataHandler.createNewBoard(newName); -> we have to create a new status
-                //await setElementCallback(statusBox, boardDataResponse);
-                //document.body.removeEventListener("click", util.clickOutside);
+                util.checkRequestError(statusResponse);
+                const newStatus = await statusResponse.json();
+                await dataHandler.bindStatusToBoard(newStatus.id, boardId);
+                myInput.closest("p").textContent = newName;
+                document.body.removeEventListener("click", clickOutsideStatus)
             }
         }
     }
-
-
 
 function removeStatusBox(element, parentString, callBack){
     const parentDiv = element.closest(parentString);
@@ -72,3 +62,4 @@ function clickOutsideStatus(e) {
         removeStatusBox(clickTarget, ".status-box", clickOutsideStatus);
     }
 }
+
