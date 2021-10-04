@@ -35,25 +35,28 @@ async function handleInputSaveBoardName(e){
   }
   if(e.key === "Enter"){
    const newName = e.currentTarget.value;
-   const button = document.querySelector('button[class="toggle-board-button"][data-board-id="pending_board"]')
+   const newBoardButton = document.querySelector('button[class="toggle-board-button"][data-board-id="pending_board"]');
+   const newStatusButton = document.querySelector('.add-new-status-button[data-board-id="pending_board"]');
+   console.log(newStatusButton);
    if (newName.length < 1 ){
      e.currentTarget.classList.add("error");
      myInput.closest("div").classList.add("error");
    } else {
      myInput.closest("div").classList.remove("error");
      const boardDataResponse = await dataHandler.createNewBoard(newName);
-     await setNewBoardData(board, button, boardDataResponse);
+     await setNewBoardData(board, newBoardButton, newStatusButton, boardDataResponse);
      //e.currentTarget.remove(); //TODO: Why we don't need that?
      document.body.removeEventListener("click", clickOutside);
    }
   }
 }
 
-async function setNewBoardData(board, button, data){
+async function setNewBoardData(board, buttonBoard, buttonStatus, data){
   const [boardId, boardName] = [data["id"], data["title"]]
   board.textContent = boardName;
   board.dataset.boardId = boardId;
-  button.dataset.boardId = boardId;
+  buttonBoard.dataset.boardId = boardId;
+  buttonStatus.dataset.boardId = boardId;
   board.closest(".board-container").querySelector(".status-container").dataset.boardId=boardId;
   domManager.addEventListener(`.toggle-board-button[data-board-id="${boardId}"`, 'click', showHideButtonHandler);
   await setStatusBaseContent(board, boardId)
@@ -62,7 +65,7 @@ async function setNewBoardData(board, button, data){
 async function setStatusBaseContent(board, boardId) {
   const myBoardContainer = board.closest(".board-container")
   const myStatusContainer = myBoardContainer.querySelector('div[class="status-container"]')
-  const statusResponse = await dataHandler.getStatuses()
+  const statusResponse = await dataHandler.getDefaultStatuses();
   if (statusResponse.statusText === "OK") {
     const baseStatuses = await statusResponse.json();
     for (const status of baseStatuses) {
