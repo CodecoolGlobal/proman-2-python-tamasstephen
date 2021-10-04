@@ -1,5 +1,6 @@
 import util from "../util/util.js";
 import {dataHandler} from "../data/dataHandler.js";
+import {boardsManager} from "../controller/boardsManager.js";
 
 export { createStatusBoxes, addNewStatus }
 
@@ -23,6 +24,7 @@ function createStatusBoxes(statusData, boardId){
     statusBox.dataset.statusId = statusData.id;
     statusBox.dataset.boardId = boardId;
     statusBox.innerHTML =` <p class="status-headline" data-board-id="${boardId}" data-status-id="${statusData.id}">${statusData.title}</p>
+                           <p class="new-card-link" data-board-id="${boardId}" data-status-id="${statusData.id}">Add new card</p>
                            <div class="status-col" data-status-id="${statusData.id}" data-board-id="${boardId}"></div>`
     return statusBox
 }
@@ -45,7 +47,8 @@ function createStatusBoxes(statusData, boardId){
                 const newStatus = await statusResponse.json();
                 await dataHandler.bindStatusToBoard(newStatus.id, boardId);
                 myInput.closest("p").textContent = newName;
-                document.body.removeEventListener("click", clickOutsideStatus)
+                setStatusData(newStatus);
+                document.body.removeEventListener("click", clickOutsideStatus);
             }
         }
     }
@@ -63,3 +66,15 @@ function clickOutsideStatus(e) {
     }
 }
 
+function setStatusData(statusData){
+    const newStatus = document.querySelector('.status-box[data-status-id="pending-id"]');
+    const statusHeadline = newStatus.querySelector(".status-headline");
+    const statusLink = newStatus.querySelector(".new-card-link");
+    const statusCol = newStatus.querySelector(".status-col");
+    newStatus.dataset.statusId = statusData.id;
+    statusHeadline.dataset.statusId = statusData.id;
+    statusLink.dataset.statusId = statusData.id;
+    statusCol.dataset.statusId = statusData.id;
+    console.log(newStatus);
+
+}
