@@ -23,6 +23,7 @@ function createStatusBoxes(statusData, boardId){
     statusBox.dataset.statusId = statusData.id;
     statusBox.dataset.boardId = boardId;
     statusBox.innerHTML =` <p class="status-headline" data-board-id="${boardId}" data-status-id="${statusData.id}">${statusData.title}</p>
+                           <p class="new-card-link" data-board-id="${boardId}" data-status-id="${statusData.id}">Add new card</p>
                            <div class="status-col" data-status-id="${statusData.id}" data-board-id="${boardId}"></div>`
     return statusBox
 }
