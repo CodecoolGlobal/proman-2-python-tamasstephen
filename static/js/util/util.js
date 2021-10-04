@@ -16,15 +16,11 @@ const util = {
         return `<input type="text" name="${name}" id="${id}">`
     },
 
-    clickOutsideWrapper(targetElement, callback){
-        function clickOutside(e) {
-        const clickTarget = document.querySelector(targetElement);
-        if (e.target !== clickTarget) {
-            callback(clickTarget);
-        }
-    }
-    return clickOutside;
-    },
+    removeNewElementInProgress(element, parentString, callBack){
+        const parentDiv = element.closest(parentString);
+        parentDiv.remove();
+        document.body.removeEventListener("click", callBack);
+}
 }
 
 export default util

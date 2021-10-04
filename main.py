@@ -50,6 +50,12 @@ def get_statuses():
     return queires.get_statuses()
 
 
+@app.route("/api/get_default_statuses")
+@json_response
+def get_default_statuses():
+    return queires.get_default_statuses()
+
+
 @app.route("/api/get_statuses/<int:board_id>")
 @json_response
 def get_statuses_by_id(board_id):
@@ -71,6 +77,22 @@ def create_new_status():
     title = request.get_json()["title"]
     print(title)
     return queires.create_new_status(title)
+
+
+@app.route("/api/create_new_card", methods=["POST"])
+@json_response
+def create_new_card():
+    card_data = request.get_json()
+    return queires.create_new_card(card_data)
+
+
+@app.route("/api/set_cards_order", methods=["PUT"])
+@json_response
+def set_cards_order():
+    cards_data = request.get_json()["cards"]
+    print(cards_data)
+    new_data = [queires.set_cards_order(data) for data in cards_data]
+    return new_data
 
 
 def main():

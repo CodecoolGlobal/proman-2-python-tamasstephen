@@ -50,6 +50,14 @@ def get_cards_for_board(board_id):
     return matching_cards
 
 
+def get_default_statuses():
+    query = sql.SQL("""
+        select * from statuses
+        where id < 5; 
+    """)
+    return data_manager.execute_select(query)
+
+
 def create_new_board(title):
     query = sql.SQL("""
         INSERT INTO boards
@@ -104,6 +112,29 @@ def create_new_status(title):
     return data_manager.execute_select(query, fetchall=False)
 
 
+def create_new_card(data):
+    query = sql.SQL("""
+        insert into cards
+        (board_id, status_id, title, card_order)
+        values({board_id}, {status_id}, {title}, {card_order})
+        returning *
+    """).format(board_id=sql.Literal(data["board_id"]),
+                status_id=sql.Literal(data["status_id"]),
+                title=sql.Literal(data["title"]),
+                card_order=sql.Literal(data["order"]))
+    return data_manager.execute_select(query, fetchall=False)
+
+
+def set_cards_order(cards_data):
+    print(cards_data)
+    query = sql.SQL("""
+        UPDATE cards
+        SET card_order = {new_order}
+        WHERE id = {id}
+        RETURNING id, card_order, title 
+    """).format(id=sql.Literal(cards_data["id"]),
+                new_order=sql.Literal(cards_data["order"]))
+    return data_manager.execute_select(query, fetchall=False)
 
 
 

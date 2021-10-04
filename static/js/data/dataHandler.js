@@ -31,8 +31,15 @@ export let dataHandler = {
     })
     return await response.json();
   },
-  createNewCard: async function (cardTitle, boardId, statusId) {
+  createNewCard: async function (cardTitle, boardId, statusId, order) {
     // creates new card, saves it and calls the callback function with its data
+    const cardResponse = await fetch("/api/create_new_card", {
+      method: "POST",
+      headers : {"Content-Type": "application/json"},
+      body: JSON.stringify({title: `${cardTitle}`, board_id: `${boardId}`, status_id: `${statusId}`, order: `${order}`})
+    })
+    return cardResponse
+
   },
   getStatusesByBoardId: async function(boardId){
     const response = await fetch(`/api/get_statuses/${boardId}`);
@@ -51,6 +58,18 @@ export let dataHandler = {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({title: `${statusName}`}),
+    });
+    return response
+  },
+  getDefaultStatuses: async function(){
+    const response = await fetch("/api/get_default_statuses");
+    return response
+  },
+  setCardOrder: async function(arrOfObj){
+    const response = await fetch("/api/set_cards_order", {
+      method: "PUT",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({cards: arrOfObj})
     });
     return response
   }
