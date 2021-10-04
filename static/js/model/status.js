@@ -3,11 +3,11 @@ import {dataHandler} from "../data/dataHandler.js";
 
 export { createStatusBoxes, addNewStatus }
 
-function addNewStatus(e){
+async function addNewStatus(e){
     const boardId = e.target.dataset.boardId;
     const statusWrapper = document.querySelector(`.status-container[data-board-id="${boardId}"]`);
     const newStatus = createStatusBoxes({title: "", id: "pending-id"}, boardId);
-    const clickOutside = util.clickOutsideWrapper("#create-new-status-name");
+    await util.wait(1)
     statusWrapper.appendChild(newStatus);
     newStatus.querySelector(".status-headline").innerHTML = util.createNewInput("status_name", "create-new-status-name");
     const myInput = document.querySelector("#create-new-status-name");
