@@ -64,6 +64,14 @@ export let dataHandler = {
   getDefaultStatuses: async function(){
     const response = await fetch("/api/get_default_statuses");
     return response
+  },
+  setCardOrder: async function(arrOfObj){
+    const response = await fetch("/api/set_cards_order", {
+      method: "PUT",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({cards: arrOfObj})
+    });
+    return response
   }
 };
 

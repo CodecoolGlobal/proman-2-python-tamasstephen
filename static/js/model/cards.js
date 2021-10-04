@@ -6,23 +6,19 @@ export {addNewCard}
 
 async function addNewCard(e){
    const parent = e.currentTarget.nextElementSibling;
-   //const statusId = parent.dataset.statusId;
-   //const boardId = parent.dataset.boardId;
-   //const newCardResponse = await dataHandler.createNewCard("new card", boardId, statusId, 1); // write this shit
-   //const newCardData = await newCardResponse.json();
    const cardBuilder = htmlFactory(htmlTemplates.card);
-   //const newCard = cardBuilder(newCardData);
    const newCard = cardBuilder({id: "new-card-name"});
-   util.wait(1 ).then(() => {
-      // this is a function my friend
-       parent.insertAdjacentHTML('afterbegin', newCard);
-       document.querySelector('.card[data-card-id="new-card-name"]').innerHTML = util.
-       createNewInput("card_name", "create-new-card-name");
-       const myInput = document.querySelector("#create-new-card-name");
-       myInput.focus();
-       myInput.addEventListener("keydown", handleInputSaveCard);
-       document.body.addEventListener("click", clickOutsideCard);
-   });
+   util.wait(1 ).then(() => { insertNewCardToParent(parent, newCard) });
+}
+
+function insertNewCardToParent(parent, newCard){
+   parent.insertAdjacentHTML('afterbegin', newCard);
+   document.querySelector('.card[data-card-id="new-card-name"]').innerHTML = util.
+   createNewInput("card_name", "create-new-card-name");
+   const myInput = document.querySelector("#create-new-card-name");
+   myInput.focus();
+   myInput.addEventListener("keydown", handleInputSaveCard);
+   document.body.addEventListener("click", clickOutsideCard);
 }
 
 // implement by the status and board cases
@@ -56,16 +52,18 @@ async function setUpNewCard(myInput){
    const boardId = myInput.closest(".status-col").dataset.boardId;
    const statusId = myInput.closest(".status-col").dataset.statusId;
    const statusResponse = await dataHandler.createNewCard(newName, boardId, statusId, 1); //different datahandler func
-   const cards = card.closest(".status-col").querySelectorAll(".card");
-   console.log(cards);
    util.checkRequestError(statusResponse);
    const newStatus = await statusResponse.json();
    setCardHtmlData(newStatus, card, newName);
+   await setNewCardOrder(card)
    document.body.removeEventListener("click", clickOutsideCard);
 }
 
-function setNewCardOrder(cardHolder){
-
+async function setNewCardOrder(card){
+   const cards = card.closest(".status-col").querySelectorAll(".card");
+   const cardIds = Array.from(cards).map((card, index) => {return {id: card.dataset.cardId, order: index+1}});
+   const cardOrderResponse = await dataHandler.setCardOrder(cardIds);
+   console.log(await cardOrderResponse.json());
 }
 
 function setCardHtmlData(newCardData, card, name){

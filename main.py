@@ -86,6 +86,15 @@ def create_new_card():
     return queires.create_new_card(card_data)
 
 
+@app.route("/api/set_cards_order", methods=["PUT"])
+@json_response
+def set_cards_order():
+    cards_data = request.get_json()["cards"]
+    print(cards_data)
+    new_data = [queires.set_cards_order(data) for data in cards_data]
+    return new_data
+
+
 def main():
     app.run(debug=True)
 

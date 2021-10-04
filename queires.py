@@ -125,4 +125,16 @@ def create_new_card(data):
     return data_manager.execute_select(query, fetchall=False)
 
 
+def set_cards_order(cards_data):
+    print(cards_data)
+    query = sql.SQL("""
+        UPDATE cards
+        SET card_order = {new_order}
+        WHERE id = {id}
+        RETURNING id, card_order, title 
+    """).format(id=sql.Literal(cards_data["id"]),
+                new_order=sql.Literal(cards_data["order"]))
+    return data_manager.execute_select(query, fetchall=False)
+
+
 
