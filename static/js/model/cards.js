@@ -64,8 +64,11 @@ async function setUpNewCard(myInput){
    document.body.removeEventListener("click", clickOutsideCard);
 }
 
+function setNewCardOrder(cardHolder){
+
+}
+
 function setCardHtmlData(newCardData, card, name){
    card.dataset.cardId = newCardData.id
    card.textContent = name;
-
 }

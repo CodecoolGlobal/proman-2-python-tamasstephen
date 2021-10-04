@@ -4,6 +4,7 @@ import {domManager} from "../view/domManager.js";
 import util from  "../util/util.js"
 import {addNewStatus, createStatusBoxes} from "./status.js";
 import {showHideButtonHandler} from "../controller/boardsManager.js"
+import {addNewCard} from "./cards.js";
 
 
 export { addNewBoard, removeBoard }
@@ -45,21 +46,20 @@ async function handleInputSaveBoardName(e){
      myInput.closest("div").classList.remove("error");
      const boardDataResponse = await dataHandler.createNewBoard(newName);
      await setNewBoardData(board, newBoardButton, newStatusButton, boardDataResponse);
-     //e.currentTarget.remove(); //TODO: Why we don't need that?
      document.body.removeEventListener("click", clickOutside);
    }
   }
 }
 
 async function setNewBoardData(board, buttonBoard, buttonStatus, data){
-  const [boardId, boardName] = [data["id"], data["title"]]
+  const [boardId, boardName] = [data["id"], data["title"]];
+  console.log(boardId, boardName)
   board.textContent = boardName;
   board.dataset.boardId = boardId;
   buttonBoard.dataset.boardId = boardId;
   buttonStatus.dataset.boardId = boardId;
+  console.log(buttonStatus);
   board.closest(".board-container").querySelector(".status-container").dataset.boardId=boardId;
-  domManager.addEventListener(`.toggle-board-button[data-board-id="${boardId}"`, 'click', showHideButtonHandler);
-  domManager.addEventListener(`.add-new-status-button[data-board-id="${boardId}"`, 'click', addNewStatus);
   await setStatusBaseContent(board, boardId)
 }
 
@@ -76,6 +76,13 @@ async function setStatusBaseContent(board, boardId) {
   } else {
     console.log("Where is our request?");
   }
+  const addNewStatusBtn = myBoardContainer.querySelector(".add-new-status-button");
+  const toggleBStatusBtn = myBoardContainer.querySelector(".toggle-board-button");
+  console.log(toggleBStatusBtn);
+  addNewStatusBtn.addEventListener('click', addNewStatus);
+  toggleBStatusBtn.addEventListener('click', showHideButtonHandler);
+  const cardLinks = myStatusContainer.querySelectorAll(".new-card-link");
+  cardLinks.forEach(link => link.addEventListener('click', addNewCard));
   myStatusContainer.classList.add("invisible");
 }
 
