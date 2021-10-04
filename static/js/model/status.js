@@ -31,6 +31,7 @@ function createStatusBoxes(statusData, boardId){
     return statusBox
 }
 
+//TODO: refactor combine with the cards
     async function handleInputSaveStatus(e){
         const boardId = document.querySelector('.status-box[data-status-id="pending-id"]').dataset.boardId;
         const myInput = document.querySelector("#create-new-status-name");
@@ -79,6 +80,4 @@ function setStatusData(statusData){
     statusHeadline.dataset.statusId = statusData.id;
     statusLink.dataset.statusId = statusData.id;
     statusCol.dataset.statusId = statusData.id;
-    console.log(newStatus);
-
 }
