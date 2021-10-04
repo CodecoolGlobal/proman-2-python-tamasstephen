@@ -2,7 +2,7 @@ import {dataHandler} from "../data/dataHandler.js";
 import {htmlFactory, htmlTemplates} from "../view/htmlFactory.js";
 import {domManager} from "../view/domManager.js";
 import util from  "../util/util.js"
-import {createStatusBoxes} from "./status.js";
+import {addNewStatus, createStatusBoxes} from "./status.js";
 import {showHideButtonHandler} from "../controller/boardsManager.js"
 
 
@@ -59,6 +59,7 @@ async function setNewBoardData(board, buttonBoard, buttonStatus, data){
   buttonStatus.dataset.boardId = boardId;
   board.closest(".board-container").querySelector(".status-container").dataset.boardId=boardId;
   domManager.addEventListener(`.toggle-board-button[data-board-id="${boardId}"`, 'click', showHideButtonHandler);
+  domManager.addEventListener(`.add-new-status-button[data-board-id="${boardId}"`, 'click', addNewStatus);
   await setStatusBaseContent(board, boardId)
 }
 
