@@ -69,10 +69,22 @@ def create_new_board(title):
     return new_board
 
 
+def rename_board(new_board_name, board_id):
+    print('hello')
+    query = sql.SQL("""
+    UPDATE boards
+    SET title = {new_board_name}
+    WHERE id = {board_id}
+    RETURNING title, id
+    """).format(new_board_name=sql.Literal(new_board_name),
+                board_id=sql.Literal(board_id))
+    return data_manager.execute_select(query)
+
+
 def get_statuses_by_board_id(board_id):
     query = sql.SQL("""
     select status_id from status_board
-    where board_id = {board_id} 
+    where id = {board_id} 
     """).format(board_id=sql.Literal(board_id))
     return data_manager.execute_select(query)
 

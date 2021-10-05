@@ -170,6 +170,14 @@ div.error::before {
     margin-top: .5rem;
 }
 
+.board-header {
+    display: flex;
+}
+
+.board-header div, #rename-board {
+    margin-right: 1rem;
+}
+
 .nav-button {
     background-color: #2e40b3;
     padding: .75rem;
