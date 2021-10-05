@@ -6,6 +6,7 @@ import statusBoardManager from "./statusManager.js";
 import {addNewStatus} from "../model/status.js";
 import {renameBoard} from "../model/board.js";
 import {setUpDropTargets} from "../model/cards.js";
+import util from "../util/util.js";
 
 export let boardsManager = {
     loadBoards: async function () {
@@ -28,7 +29,7 @@ export let boardsManager = {
                 addNewStatus);
         }
         renameBoard();
-        setUpDropTargets();
+        util.wait(300).then(() => setUpDropTargets());
     },
 };
 

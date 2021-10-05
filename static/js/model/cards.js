@@ -45,6 +45,7 @@ function clickOutsideCard(e) {
    }
 }
 
+// Refactor
 async function setUpNewCard(myInput){
    const card = myInput.closest(".card")
    card.classList.remove("error");
@@ -78,6 +79,7 @@ function setCardHtmlData(newCardData, card, name){
 }
 
 function setUpDropTargets(){
+   console.log(document.body);
    const cards = document.querySelectorAll(".card");
    const cardHolders = document.querySelectorAll(".status-col");
    cards.forEach(card => {
@@ -101,6 +103,7 @@ function initContainerForDragEvents(holder){
 }
 
 function handleDragStart(e){
+   console.log(e);
    e.currentTarget.classList.add("dragged");
    const parent = e.currentTarget.closest(".status-col");
    saveDropDataToDataTransfer(e.dataTransfer, parent);
@@ -129,8 +132,9 @@ async function handleDrop(e) {
 async function handleDropContainer(e){
    if(!e.currentTarget.firstChild){
       e.preventDefault();
-      const grabbedCard = document.querySelector(".dragged")
-      e.currentTarget.appendChild(grabbedCard)
+      const grabbedCard = document.querySelector(".dragged");
+      console.log(grabbedCard)
+      e.currentTarget.appendChild(grabbedCard);
       const dataToDigest = getUpdateData(e.currentTarget, e.dataTransfer, grabbedCard);
       await updateCardDropChanges(dataToDigest, isOldStatus(dataToDigest));
    }
@@ -151,7 +155,6 @@ function getUpdateData(element, dataTrans, card){
 function isOldStatus(newData){
    return newData.statusId === newData.newStatusId && newData.boardId === newData.newBoardId
 }
-
 
 async function updateCardDropChanges(newData, isOldStatus){
    const card = document.querySelector(`[data-card-id="${newData.cardId}"]`)
