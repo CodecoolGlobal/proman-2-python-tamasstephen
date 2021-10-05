@@ -21,7 +21,7 @@ body {
 
 #root,
 .wrapper {
-    width: 60%;
+    width: 65%;
     margin: 0 auto;
 }
 
@@ -50,7 +50,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 860px;
+    max-width: 880px;
     padding: 1rem;
     background-color: white;
     border-radius: 8px;
