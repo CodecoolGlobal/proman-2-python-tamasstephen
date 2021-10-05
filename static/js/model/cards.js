@@ -13,8 +13,8 @@ async function addNewCard(e){
 
 function insertNewCardToParent(parent, newCard){
    parent.insertAdjacentHTML('afterbegin', newCard);
-   document.querySelector('.card[data-card-id="new-card-name"]').innerHTML = util.
-   createNewInput("card_name", "create-new-card-name");
+   const card = document.querySelector('.card[data-card-id="new-card-name"]');
+   card.innerHTML = util.createNewInput("card_name", "create-new-card-name");
    const myInput = document.querySelector("#create-new-card-name");
    myInput.focus();
    myInput.addEventListener("keydown", handleInputSaveCard);
@@ -48,26 +48,27 @@ function clickOutsideCard(e) {
 async function setUpNewCard(myInput){
    const card = myInput.closest(".card")
    card.classList.remove("error");
-   const newName = myInput.value
+   const newName = myInput.value;
    const boardId = myInput.closest(".status-col").dataset.boardId;
    const statusId = myInput.closest(".status-col").dataset.statusId;
    const statusResponse = await dataHandler.createNewCard(newName, boardId, statusId, 1); //different datahandler func
    util.checkRequestError(statusResponse);
    const newStatus = await statusResponse.json();
    setCardHtmlData(newStatus, card, newName);
-   await setNewCardOrder(card)
+   await setNewCardOrder(card);
    document.body.removeEventListener("click", clickOutsideCard);
+   initCardForDragEvents(card);
 }
 
 async function setNewCardOrder(card){
    const cardIds = getNewCardOrder(card);
-   const cardOrderResponse = await dataHandler.setCardOrder(cardIds);
-   console.log(await cardOrderResponse.json());
+   await dataHandler.setCardOrder(cardIds);
 }
 
 function getNewCardOrder(card){
    const cards = card.closest(".status-col").querySelectorAll(".card");
-   const cardIdsInOrder = Array.from(cards).map((card, index) => {return {id: card.dataset.cardId, order: index+1}});
+   const cardIdsInOrder = Array.from(cards).map((card, index) =>
+                          {return {id: card.dataset.cardId, order: index+1}});
    return cardIdsInOrder;
 }
 
@@ -80,15 +81,23 @@ function setUpDropTargets(){
    const cards = document.querySelectorAll(".card");
    const cardHolders = document.querySelectorAll(".status-col");
    cards.forEach(card => {
-      card.addEventListener("dragstart", handleDragStart);
-      card.addEventListener("dragend", handleDragEnd);
-      card.addEventListener("drop", handleDrop);
-      card.addEventListener("dragover", handleDragOver);
+      initCardForDragEvents(card);
    })
    cardHolders.forEach( holder => {
-      holder.addEventListener("dragover", handleDragOverContainer);
-      holder.addEventListener("drop", handleDropContainer);
+      initContainerForDragEvents(holder);
    })
+}
+
+function initCardForDragEvents(card){
+   card.addEventListener("dragstart", handleDragStart);
+   card.addEventListener("dragend", handleDragEnd);
+   card.addEventListener("drop", handleDrop);
+   card.addEventListener("dragover", handleDragOver);
+}
+
+function initContainerForDragEvents(holder){
+   holder.addEventListener("dragover", handleDragOverContainer);
+   holder.addEventListener("drop", handleDropContainer);
 }
 
 function handleDragStart(e){
@@ -140,7 +149,6 @@ function getUpdateData(element, dataTrans, card){
 }
 
 function isOldStatus(newData){
-   console.log(newData);
    return newData.statusId === newData.newStatusId && newData.boardId === newData.newBoardId
 }
 
@@ -150,9 +158,7 @@ async function updateCardDropChanges(newData, isOldStatus){
    if(isOldStatus){
       await setNewCardOrder(card)
    } else {
-      console.log("new")
-      const cardUpdates = await dataHandler.updateCardStatus(newData.newBoardId, newData.newStatusId, newData.cardId);
-      console.log(await cardUpdates.json());
+      await dataHandler.updateCardStatus(newData.newBoardId, newData.newStatusId, newData.cardId);
       await setNewCardOrder(card);
       const oldStatusCol = document.querySelector(`.status-col[data-status-id="${newData.statusId}"][data-board-id="${newData.boardId}"]`);
       const oldColFirstCard = oldStatusCol.firstChild
