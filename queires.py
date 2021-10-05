@@ -138,7 +138,6 @@ def create_new_card(data):
 
 
 def set_cards_order(cards_data):
-    print(cards_data)
     query = sql.SQL("""
         UPDATE cards
         SET card_order = {new_order}
@@ -148,5 +147,17 @@ def set_cards_order(cards_data):
                 new_order=sql.Literal(cards_data["order"]))
     return data_manager.execute_select(query, fetchall=False)
 
+
+def update_card_status(data, card_id):
+    query = sql.SQL("""
+        UPDATE cards
+        SET board_id = {new_board_id},
+            status_id = {new_status_id}
+        WHERE id = {card_id}
+        RETURNING *
+    """).format(new_board_id=sql.Literal(data["board_id"]),
+                new_status_id=sql.Literal(data["status_id"]),
+                card_id=sql.Literal(card_id))
+    return data_manager.execute_select(query, fetchall=False)
 
 

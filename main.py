@@ -104,6 +104,14 @@ def set_cards_order():
     return new_data
 
 
+@app.route("/api/update_card_status/<int:card_id>", methods=["PUT"])
+@json_response
+def update_card_status(card_id):
+    new_card_data = request.get_json()
+    print(new_card_data)
+    return queires.update_card_status(new_card_data, card_id)
+
+
 def main():
     app.run(debug=True)
 
