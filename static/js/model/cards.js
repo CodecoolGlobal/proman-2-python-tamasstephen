@@ -2,7 +2,7 @@ import {dataHandler} from "../data/dataHandler.js";
 import {htmlFactory, htmlTemplates } from "../view/htmlFactory.js";
 import util from "../util/util.js";
 
-export {addNewCard}
+export {addNewCard, setUpDropTargets}
 
 async function addNewCard(e){
    const parent = e.currentTarget.nextElementSibling;
@@ -70,4 +70,54 @@ async function setNewCardOrder(card){
 function setCardHtmlData(newCardData, card, name){
    card.dataset.cardId = newCardData.id
    card.textContent = name;
+}
+
+function setUpDropTargets(){
+   const cards = document.querySelectorAll(".card");
+   const cardHolders = document.querySelectorAll(".status-col");
+   cards.forEach(card => {
+      card.addEventListener("dragstart", handleDragStart);
+      card.addEventListener("dragend", handleDragEnd);
+      card.addEventListener("drop", handleDrop);
+      card.addEventListener("dragover", handleDragOver);
+   })
+   cardHolders.forEach( holder => {
+      holder.addEventListener("dragover", handleDragOverContainer);
+      holder.addEventListener("drop", handleDropContainer);
+   })
+}
+
+function handleDragStart(e){
+   e.currentTarget.classList.add("dragged")
+   e.dataTransfer.setData("type/drag-id", "dragged");
+}
+
+function handleDragEnd(e){
+  e.currentTarget.classList.remove("dragged");
+}
+
+function handleDrop(e) {
+   e.preventDefault();
+   const grabbedCard = document.querySelector(".dragged");
+   const parent = e.currentTarget.closest(".status-col")
+   parent.insertBefore(grabbedCard, e.currentTarget);
+}
+
+function handleDragOver(e){
+   e.preventDefault();
+}
+
+function handleDragOverContainer(e){
+  if(!e.currentTarget.firstChild){
+     e.preventDefault();
+  }
+}
+
+function handleDropContainer(e){
+   if(!e.currentTarget.firstChild){
+      e.preventDefault();
+      const grabbedCard = document.querySelector(".dragged")
+      e.currentTarget.appendChild(grabbedCard)
+   }
+
 }
