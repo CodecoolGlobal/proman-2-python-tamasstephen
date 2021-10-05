@@ -38,7 +38,6 @@ async function handleInputSaveBoardName(e){
    const newName = e.currentTarget.value;
    const newBoardButton = document.querySelector('button[class="toggle-board-button"][data-board-id="pending_board"]');
    const newStatusButton = document.querySelector('.add-new-status-button[data-board-id="pending_board"]');
-   console.log(newStatusButton);
    if (newName.length < 1 ){
      e.currentTarget.classList.add("error");
      myInput.closest("div").classList.add("error");
@@ -53,12 +52,10 @@ async function handleInputSaveBoardName(e){
 
 async function setNewBoardData(board, buttonBoard, buttonStatus, data){
   const [boardId, boardName] = [data["id"], data["title"]];
-  console.log(boardId, boardName)
   board.textContent = boardName;
   board.dataset.boardId = boardId;
   buttonBoard.dataset.boardId = boardId;
   buttonStatus.dataset.boardId = boardId;
-  console.log(buttonStatus);
   board.closest(".board-container").querySelector(".status-container").dataset.boardId=boardId;
   await setStatusBaseContent(board, boardId)
 }
@@ -78,7 +75,6 @@ async function setStatusBaseContent(board, boardId) {
   }
   const addNewStatusBtn = myBoardContainer.querySelector(".add-new-status-button");
   const toggleBStatusBtn = myBoardContainer.querySelector(".toggle-board-button");
-  console.log(toggleBStatusBtn);
   addNewStatusBtn.addEventListener('click', addNewStatus);
   toggleBStatusBtn.addEventListener('click', showHideButtonHandler);
   const cardLinks = myStatusContainer.querySelectorAll(".new-card-link");
@@ -90,7 +86,6 @@ async function connectStatusWithBoard(statusId, boardId){
   const connectionData = await dataHandler.bindStatusToBoard(statusId, boardId);
   if (connectionData.statusText === "OK"){
     const responseValue = await connectionData.json();
-    console.log(responseValue)
   } else {
     console.log("Could not connect board to status")
   }
