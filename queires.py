@@ -84,7 +84,7 @@ def rename_board(new_board_name, board_id):
 def get_statuses_by_board_id(board_id):
     query = sql.SQL("""
     select status_id from status_board
-    where id = {board_id} 
+    where board_id = {board_id} 
     """).format(board_id=sql.Literal(board_id))
     return data_manager.execute_select(query)
 

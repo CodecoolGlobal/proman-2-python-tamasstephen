@@ -50,6 +50,7 @@ async function setUpNewCard(myInput){
    card.classList.remove("error");
    const newName = myInput.value
    const boardId = myInput.closest(".status-col").dataset.boardId;
+   console.log(boardId);
    const statusId = myInput.closest(".status-col").dataset.statusId;
    const statusResponse = await dataHandler.createNewCard(newName, boardId, statusId, 1); //different datahandler func
    util.checkRequestError(statusResponse);
