@@ -126,7 +126,7 @@ function handleRename(event) {
         let newBoardName = currentRenameInput.value;
         console.log(newBoardName);
         // const BoardRenameDataResponse = await dataHandler.renameBoard(newBoardName);
-        await dataHandler.renameBoard(newBoardName, boardID);
+        await dataHandler.renameCurrentBoard(newBoardName, boardID);
         await boardsManager.loadBoards()
     });
 }

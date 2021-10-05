@@ -28,7 +28,7 @@ export let dataHandler = {
         });
         return await response.json();
     },
-    renameBoard: async function (newBoardName, boardId) {
+    renameCurrentBoard: async function (newBoardName, boardId) {
         const response = await fetch("/api/rename_board", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
