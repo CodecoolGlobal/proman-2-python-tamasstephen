@@ -81,7 +81,15 @@ export let dataHandler = {
       body: JSON.stringify({cards: arrOfObj})
     });
     return response
-  }
+  },
+    updateCardStatus: async function(boardId, statusId, cardId){
+        const response = await fetch(`api/update_card_status/${cardId}`, {
+           method: "PUT",
+           headers: {"Content-Type": "application/json"},
+           body: JSON.stringify({board_id: `${boardId}`, status_id: `${statusId}`})
+       })
+        return response
+    }
 };
 
 async function apiGet(url) {
