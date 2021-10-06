@@ -65,15 +65,15 @@ async function setStatusBaseContent(board, boardId) {
     const myBoardContainer = board.closest(".board-container");
     const myStatusContainer = myBoardContainer.querySelector('div[class="status-container"]');
     const statusResponse = await dataHandler.getDefaultStatuses();
-    if (statusResponse.statusText === "OK") {
-        const baseStatuses = await statusResponse.json();
-        for (const status of baseStatuses) {
-            myStatusContainer.appendChild(createStatusBoxes(status, boardId));
-            await connectStatusWithBoard(status.id, boardId);
-        }
-    } else {
-        console.log("Where is our request?");
+    const baseStatuses = await statusResponse.json();
+    for (const status of baseStatuses) {
+        myStatusContainer.appendChild(createStatusBoxes(status, boardId));
+        await connectStatusWithBoard(status.id, boardId);
     }
+    setUpBoardListeners(myBoardContainer, myStatusContainer);
+}
+
+function setUpBoardListeners(myBoardContainer, myStatusContainer){
     const addNewStatusBtn = myBoardContainer.querySelector(".add-new-status-button");
     const toggleBStatusBtn = myBoardContainer.querySelector(".toggle-board-button");
     const cardHandlers = myStatusContainer.querySelectorAll(".status-col");
@@ -87,11 +87,7 @@ async function setStatusBaseContent(board, boardId) {
 
 async function connectStatusWithBoard(statusId, boardId) {
     const connectionData = await dataHandler.bindStatusToBoard(statusId, boardId);
-    if (connectionData.statusText === "OK") {
-        const responseValue = await connectionData.json();
-    } else {
-        console.log("Could not connect board to status");
-    }
+    await connectionData.json();
 }
 
 function removeBoard(board) {
