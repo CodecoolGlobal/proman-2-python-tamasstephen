@@ -2,10 +2,10 @@ import {dataHandler} from "../data/dataHandler.js";
 import {htmlFactory, htmlTemplates} from "../view/htmlFactory.js";
 import {domManager} from "../view/domManager.js";
 import util from "../util/util.js";
-import {createStatusBoxes, addNewStatus} from "./status.js";
+import {createStatusBoxes, addNewStatus } from "./status.js";
 import {showHideButtonHandler} from "../controller/boardsManager.js";
 import {boardsManager} from "../controller/boardsManager.js";
-import {addNewCard} from "./cards.js";
+import {addNewCard, initContainerForDragEvents} from "./cards.js";
 
 export {addNewBoard, removeBoard, renameBoard};
 
@@ -75,6 +75,9 @@ async function setStatusBaseContent(board, boardId) {
     }
     const addNewStatusBtn = myBoardContainer.querySelector(".add-new-status-button");
     const toggleBStatusBtn = myBoardContainer.querySelector(".toggle-board-button");
+    const statusHolders = myStatusContainer.querySelectorAll(".status-col");
+    console.log(statusHolders);
+    statusHolders.forEach(status => { initContainerForDragEvents(status)} )
     addNewStatusBtn.addEventListener('click', addNewStatus);
     toggleBStatusBtn.addEventListener('click', showHideButtonHandler);
     const cardLinks = myStatusContainer.querySelectorAll(".new-card-link");
