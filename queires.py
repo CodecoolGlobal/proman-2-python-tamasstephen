@@ -161,3 +161,28 @@ def update_card_status(data, card_id):
     return data_manager.execute_select(query, fetchall=False)
 
 
+def get_existing_user(username):
+    query = sql.SQL("""
+        SELECT * FROM users
+        WHERE username = {username}
+    """).format(username=sql.Literal(username))
+    return data_manager.execute_select(query, fetchall=False)
+
+
+def setNewUser(username, password):
+    query = sql.SQL("""
+        INSERT INTO users
+        (username, password)
+        VALUES ({username}, {password})
+        RETURNING *
+    """).format(username=sql.Literal(username),
+                password=sql.Literal(password))
+    return data_manager.execute_select(query, fetchall=False)
+
+
+def get_password_hash(user_id):
+    query = sql.SQL("""
+        SELECT password FROM users
+        WHERE id = {user_id} 
+    """).format(user_id=sql.Literal(user_id))
+    return data_manager.execute_select(query, fetchall=False)

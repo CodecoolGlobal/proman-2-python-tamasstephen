@@ -34,3 +34,21 @@ function cardBuilder(card) {
     return `<div draggable="true" class="card" data-card-id="${card.id}">${card.title}</div>`;
 }
 
+export function formBuilder(useCase) {
+    return `<div class="popup-wrapper">
+                <div class="popup-form">
+                    <form>
+                        <h2>${useCase}</h2>
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username"> 
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password"> 
+                        <input type="submit" value="Submit"> 
+                    </form> 
+                </div>
+            </div>`
+}
+
+export function errorBlock(msg){
+   return `<div class="error-msg-element">${msg}</div>`
+}

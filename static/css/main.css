@@ -2,6 +2,7 @@
     --color-error: red;
     --color-card-border: #d3d3d3;
     --color-verylight-gray: #f4f0ec;
+    --color-cta-blue: #2e40b3;
     --base-font-size: 1rem;
     --color-link-blue: #4169e1;
     --color-cta-primary: #ff7f50;
@@ -15,13 +16,14 @@ body {
     background-image: linear-gradient(#e4e7f5, #faf1ed 100%);
     background-repeat: no-repeat;
     background-attachment: fixed;
-    height: 100%;
+    height: 100vh;
 }
 
 
 #root,
 .wrapper {
     width: 65%;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
@@ -50,7 +52,6 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 880px;
     padding: 1rem;
     background-color: white;
     border-radius: 8px;
@@ -75,7 +76,8 @@ nav {
     font-weight: 800;
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="password"]{
     border-style: hidden;
     border: 1px solid black;
     border-radius: 2px;
@@ -91,6 +93,15 @@ input[type="text"].error {
     content: "The provided field is empty";
     display: block;
     color: var(--color-error);
+}
+
+input[type="submit"] {
+    height: 2rem;
+    background-color: var(--color-cta-blue);
+    border-radius: 4px;
+    border-style: hidden;
+    color: white;
+    font-weight: 700;
 }
 
 button {
@@ -113,7 +124,7 @@ div.error::before {
     display: flex;
     flex-wrap: wrap;
     padding: var(--base-font-size);
-    padding-left: 0px;
+    padding-left: 0;
 }
 
 .status-col {
@@ -185,4 +196,65 @@ div.error::before {
 
 .status-col {
     min-height: 200px;
+}
+
+.popup-form,
+.popup-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.popup-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 100%;
+    background-color: rgba(0, 0, 0, .3);
+}
+
+form {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    padding-top: 2.5rem;
+    padding-left: 7rem;
+    padding-right: 7rem;
+    padding-bottom: 1.5rem;
+    border-radius: 8px;
+}
+
+form > input {
+    margin-bottom: 1rem;
+}
+
+form > label {
+    margin-bottom: .25rem;
+}
+
+.popup-form label {
+    text-transform: capitalize;
+}
+
+#username,
+#password {
+    max-width: 100%;
+}
+
+form h2 {
+    padding: 0;
+    margin-top: 0;
+}
+
+.error-msg-element{
+    margin-bottom: .75rem;
+    padding: .5rem;
+    font-size: .725rem;
+    font-weight: 600;
+    border: 2px solid red;
+    color: red;
+    border-radius: 8px;
+    background-color: rgba(255, 99, 71, .1);
 }

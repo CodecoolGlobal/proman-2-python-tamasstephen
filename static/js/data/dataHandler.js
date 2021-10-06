@@ -89,6 +89,26 @@ export let dataHandler = {
            body: JSON.stringify({board_id: `${boardId}`, status_id: `${statusId}`})
        })
         return response
+    },
+    async postRegistrationData(username, password){
+        const response = await fetch("/api/registration", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({username: `${username}`, password: `${password}`})
+        })
+        return response
+    },
+    async handleLogout(){
+        const response = await fetch("/api/logout");
+        return response
+    },
+    handleLogin: async function(username, password) {
+        const response = await fetch("/api/login", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({username: `${username}`, password: `${password}`})
+        })
+        return response
     }
 };
 
