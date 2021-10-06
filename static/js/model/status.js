@@ -12,11 +12,9 @@ async function addNewStatus(e){
     await util.wait(1)
     statusWrapper.appendChild(newStatus);
     newStatus.querySelector(".status-headline").innerHTML = util.createNewInput("status_name", "create-new-status-name");
-    //The same ------> we need a callback function
     const myInput = document.querySelector("#create-new-status-name");
-    myInput.addEventListener("keydown", handleInputSaveStatus); //the callback is not the same
+    myInput.addEventListener("keydown", handleInputSaveStatus);
     myInput.focus()
-    //Till here
     util.wait(1).then(()=> document.body.addEventListener("click", clickOutsideStatus));
 }
 
@@ -32,35 +30,37 @@ function createStatusBoxes(statusData, boardId){
     return statusBox
 }
 
-//TODO: refactor combine with the cards
+//TODO: refactor combine with the cards and board
     async function handleInputSaveStatus(e){
         const boardId = document.querySelector('.status-box[data-status-id="pending-id"]').dataset.boardId;
         const myInput = document.querySelector("#create-new-status-name");
-        //this is the same
         if (e.key === "Escape"){
             removeStatusBox(myInput, `.status-box[data-status-id="pending-id"]`, clickOutsideStatus);
         }
-        //till here
         if(e.key === "Enter"){
             const newName = e.currentTarget.value;
             if (newName.length < 1 ){
                 e.currentTarget.classList.add("error");
                 myInput.closest("div").classList.add("error");
             } else {
-                myInput.closest("div").classList.remove("error");
-                const cardHolder = myInput.closest("div").querySelector(".status-col");
-                const addNewCardBtn = myInput.closest("div").querySelector(".new-card-link");
-                addNewCardBtn.addEventListener("click", addNewCard)
-                const statusResponse = await dataHandler.createNewStatus(newName); //different datahandler func
-                const newStatus = await statusResponse.json();
-                await dataHandler.bindStatusToBoard(newStatus.id, boardId); //we don't need that in other funcs
-                myInput.closest("p").textContent = newName; //different selector
-                setStatusData(newStatus);
-                initContainerForDragEvents(cardHolder);
-                document.body.removeEventListener("click", clickOutsideStatus); //different callback
+                await setUpNewStatusListeners(myInput, newName, boardId);
             }
         }
     }
+
+async function setUpNewStatusListeners(myInput, newName, boardId){
+    const cardHolder = myInput.closest("div").querySelector(".status-col");
+    const addNewCardBtn = myInput.closest("div").querySelector(".new-card-link");
+    const statusResponse = await dataHandler.createNewStatus(newName);
+    const newStatus = await statusResponse.json();
+    myInput.closest("div").classList.remove("error");
+    addNewCardBtn.addEventListener("click", addNewCard)
+    await dataHandler.bindStatusToBoard(newStatus.id, boardId);
+    myInput.closest("p").textContent = newName;
+    setStatusData(newStatus);
+    initContainerForDragEvents(cardHolder);
+    document.body.removeEventListener("click", clickOutsideStatus);
+}
 
 function removeStatusBox(element, parentString, callBack){
     const parentDiv = element.closest(parentString);

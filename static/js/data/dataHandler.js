@@ -21,12 +21,8 @@ export let dataHandler = {
     },
     createNewBoard: async function (boardTitle) {
         // creates new board, saves it and calls the callback function with its data
-        const response = await fetch("/api/create_board", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({title: `${boardTitle}`})
-        });
-        return await response.json();
+        const response = await apiPost("/api/create_board", {title: `${boardTitle}`});
+        return response
     },
     renameCurrentBoard: async function (newBoardName, boardId) {
         const response = await fetch("/api/rename_board", {
@@ -38,15 +34,16 @@ export let dataHandler = {
     },
     createNewCard: async function (cardTitle, boardId, statusId, order) {
         // creates new card, saves it and calls the callback function with its data
-        const cardResponse = await fetch("/api/create_new_card", {
-            method: "POST",
-            headers : {"Content-Type": "application/json"},
-            body: JSON.stringify({title: `${cardTitle}`, board_id: `${boardId}`, status_id: `${statusId}`, order: `${order}`})
-        })
-        return cardResponse
+        const response = await apiPost("/api/create_new_card", {
+            title: `${cardTitle}`,
+            board_id: `${boardId}`,
+            status_id: `${statusId}`,
+            order: `${order}`
+        });
+        return response
     },
     getStatusesByBoardId: async function (boardId) {
-        const response = await fetch(`/api/get_statuses/${boardId}`);
+        const response = await apiGet(`/api/get_statuses/${boardId}`);
         return response;
     },
     bindStatusToBoard: async function (statusId, boardId) {
@@ -123,6 +120,15 @@ async function apiGet(url) {
 }
 
 async function apiPost(url, payload) {
+    let response = await fetch(url, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(payload),
+    })
+    if (response.status === 200) {
+        let data = response.json();
+        return data;
+    }
 }
 
 async function apiDelete(url) {
