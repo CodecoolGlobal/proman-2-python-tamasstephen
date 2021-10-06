@@ -49,3 +49,6 @@ export function formBuilder(useCase) {
             </div>`
 }
 
+export function errorBlock(msg){
+   return `<div class="error-msg-element">${msg}</div>`
+}

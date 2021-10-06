@@ -1,5 +1,5 @@
 import {dataHandler} from "../data/dataHandler.js";
-import {htmlFactory, htmlTemplates, formBuilder} from "../view/htmlFactory.js";
+import {htmlFactory, htmlTemplates, formBuilder, errorBlock} from "../view/htmlFactory.js";
 import {domManager} from "../view/domManager.js";
 import util from "../util/util.js";
 import {createStatusBoxes, addNewStatus } from "./status.js";
@@ -178,18 +178,26 @@ async function handleRegistration(e){
    e.preventDefault();
    const [username, password] = [e.currentTarget.username, e.currentTarget.password];
    if(username.value.length < 1 || password.value.length < 1){
-       console.log("WTF are you doing!?");
-       //dropErrorMsg("message");
+       handleFormError("isEmpty")
    } else {
-       const isValidUsername = await dataHandler.postRegistrationData(username.value, password.value);
-       // if the username is valid the server handles the user login
+       const validUserResponse = await dataHandler.postRegistrationData(username.value, password.value);
+       const isValidUsername = await validUserResponse.json()
        if(isValidUsername){
            document.querySelector(".popup-wrapper").remove();
            location.replace("/");
        } else {
-           //dropErrorMsg("message");
+           handleFormError("existingUsername")
        }
    }
+}
+
+function handleFormError(error){
+   const existingError = document.querySelector(".error-msg-element");
+   existingError ? existingError.remove() : "";
+   let message;
+   error === "isEmpty" ? message = "Both fields must be filled" : message = "This username already exists";
+   const errorDiv = errorBlock(message);
+   document.querySelector("form").querySelector("h2").insertAdjacentHTML("afterend", errorDiv)
 }
 
 async function handleLogout(){
