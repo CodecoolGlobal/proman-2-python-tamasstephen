@@ -7,7 +7,7 @@ import {showHideButtonHandler} from "../controller/boardsManager.js";
 import {boardsManager} from "../controller/boardsManager.js"; // need to create a new one -> a more suitable one
 import {addNewCard, initContainerForDragEvents} from "./cards.js";
 
-export {addNewBoard, removeBoard, renameBoard, createRegistrationWindow, handleLogout};
+export {addNewBoard, removeBoard, renameBoard, createRegistrationWindow, handleLogout, createLoginWindow};
 
 
 function addNewBoard() {
@@ -108,12 +108,10 @@ function clickOutside(e) {
     }
 }
 
-
 function renameBoard() {
     const boards = document.querySelectorAll('.board');
     boards.forEach(board => board.addEventListener('click', handleRename));
 }
-
 
 function handleRename(event) {
     const board = event.currentTarget;
@@ -127,7 +125,6 @@ function handleRename(event) {
     util.wait(100).then(() => document.body.addEventListener('click', fnc));
     handleInputField(boardID, fnc, board);
 }
-
 
 function handleInputField(boardID, fnc, board) {
     document.querySelector('#rename_the_board').addEventListener('keydown', async (e) => {
@@ -161,42 +158,63 @@ function handleWrapper(currentName, board) {
 }
 
 function createRegistrationWindow(){
-    const regPopup = formBuilder("Registration");
+    setUpPopupForm("Registration")
+}
+
+function createLoginWindow(){
+    setUpPopupForm("Login")
+}
+
+function setUpPopupForm(useCase){
+    const regPopup = formBuilder(useCase);
     document.querySelector("#root").insertAdjacentHTML("beforebegin", regPopup);
     const form = document.querySelector("form");
     const popupOuter = document.querySelector(".popup-wrapper");
-    form.addEventListener("submit", handleRegistration);
+    const popupBehaviour = useCase === "Registration"
+        ? setUpUserForm(dataHandler.postRegistrationData, getFormErrorMessages("Registration"))
+        : setUpUserForm(dataHandler.handleLogin, getFormErrorMessages("Login"));
+    form.addEventListener("submit", popupBehaviour);
     popupOuter.addEventListener("click", (e)=> {
         if (e.target === popupOuter){
             document.querySelector(".popup-wrapper").remove();
         }
     })
+}
+
+function getFormErrorMessages(useCase){
+   return useCase === "Registration"
+       ? {firstError: "Both fields must be filled!", secondError: "This username already exists!"}
+       : {firstError: "Both fields must be filled!", secondError: "The username or password is incorrect!"};
+}
+
+
+function setUpUserForm(callback, messageObj){
+
+    async function handleForm(e){
+        e.preventDefault();
+        const [username, password] = [e.currentTarget.username, e.currentTarget.password];
+        if(username.value.length < 1 || password.value.length < 1){
+            handleFormError(messageObj.firstError)
+        } else {
+            const validUserResponse = await callback(username.value, password.value);
+            const isValidUsername = await validUserResponse.json(); // after refactoring we don't need this line
+            if(isValidUsername){
+                document.querySelector(".popup-wrapper").remove();
+                location.replace("/");
+            } else {
+                handleFormError(messageObj.secondError)
+            }
+        }
+    }
+
+    return handleForm
 
 }
 
-async function handleRegistration(e){
-   e.preventDefault();
-   const [username, password] = [e.currentTarget.username, e.currentTarget.password];
-   if(username.value.length < 1 || password.value.length < 1){
-       handleFormError("isEmpty")
-   } else {
-       const validUserResponse = await dataHandler.postRegistrationData(username.value, password.value);
-       const isValidUsername = await validUserResponse.json()
-       if(isValidUsername){
-           document.querySelector(".popup-wrapper").remove();
-           location.replace("/");
-       } else {
-           handleFormError("existingUsername")
-       }
-   }
-}
-
-function handleFormError(error){
+function handleFormError(errorMsg){
    const existingError = document.querySelector(".error-msg-element");
    existingError ? existingError.remove() : "";
-   let message;
-   error === "isEmpty" ? message = "Both fields must be filled" : message = "This username already exists";
-   const errorDiv = errorBlock(message);
+   const errorDiv = errorBlock(errorMsg);
    document.querySelector("form").querySelector("h2").insertAdjacentHTML("afterend", errorDiv)
 }
 

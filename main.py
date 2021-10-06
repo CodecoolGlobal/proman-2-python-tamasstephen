@@ -52,7 +52,6 @@ def create_new_board():
 def rename_board():
     title = request.get_json()["title"]
     board_id = request.get_json()["board_id"]
-    print(request.get_json())
     return queires.rename_board(title, board_id)
 
 
@@ -87,7 +86,6 @@ def bind_status_to_board():
 @json_response
 def create_new_status():
     title = request.get_json()["title"]
-    print(title)
     return queires.create_new_status(title)
 
 
@@ -102,7 +100,6 @@ def create_new_card():
 @json_response
 def set_cards_order():
     cards_data = request.get_json()["cards"]
-    print(cards_data)
     new_data = [queires.set_cards_order(data) for data in cards_data]
     return new_data
 
@@ -111,7 +108,6 @@ def set_cards_order():
 @json_response
 def update_card_status(card_id):
     new_card_data = request.get_json()
-    print(new_card_data)
     return queires.update_card_status(new_card_data, card_id)
 
 
@@ -119,14 +115,28 @@ def update_card_status(card_id):
 @json_response
 def handle_registration():
     username, password = request.get_json()["username"], request.get_json()["password"]
-    is_existing_username = queires.get_existing_username(username)
+    is_existing_username = queires.get_existing_user(username)
     if not is_existing_username:
         password_hash = security.generate_password_hash(password, method='pbkdf2:sha256', salt_length=16)
         set_user = queires.setNewUser(username, password_hash)
         session['username'] = username
         session['id'] = set_user['id']
-        print(session["id"])
         return set_user
+    return False
+
+
+@app.route("/api/login", methods=["POST"])
+@json_response
+def user_login():
+    username, password = request.get_json()["username"], request.get_json()["password"]
+    is_existing_user = queires.get_existing_user(username)
+    if is_existing_user:
+        hashed_password = queires.get_password_hash(is_existing_user["id"])
+        is_valid_password = security.check_password_hash(hashed_password["password"], password)
+        if is_valid_password:
+            session["username"] = username
+            session["id"] = is_existing_user["id"]
+            return True
     return False
 
 

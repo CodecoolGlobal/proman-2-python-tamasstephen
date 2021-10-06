@@ -1,7 +1,7 @@
 import {dataHandler} from "../data/dataHandler.js";
 import {htmlFactory, htmlTemplates} from "../view/htmlFactory.js";
 import {domManager} from "../view/domManager.js";
-import {addNewBoard, createRegistrationWindow, renameBoard, handleLogout} from "../model/board.js";
+import {addNewBoard, createRegistrationWindow, renameBoard, handleLogout, createLoginWindow} from "../model/board.js";
 import statusBoardManager from "./statusManager.js";
 import {addNewStatus} from "../model/status.js";
 import {setUpDropTargets} from "../model/cards.js";
@@ -31,6 +31,7 @@ export let boardsManager = {
         const regButton = document.querySelector("#register");
         if(regButton){
             regButton.addEventListener("click", createRegistrationWindow);
+            document.querySelector("#login").addEventListener("click", createLoginWindow);
         } else {
             document.querySelector("#logout").addEventListener("click", handleLogout);
         }
