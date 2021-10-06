@@ -45,6 +45,7 @@ async function handleInputSaveBoardName(e) {
             myInput.closest("div").classList.remove("error");
             const boardDataResponse = await dataHandler.createNewBoard(newName);
             await setNewBoardData(board, newBoardButton, newStatusButton, boardDataResponse);
+            board.addEventListener('click', handleRename);
             document.body.removeEventListener("click", clickOutside);
         }
     }
@@ -148,12 +149,8 @@ function handleInputField(boardID, fnc, board) {
 
 function handleWrapper(currentName, board) {
     function handleRenameClickOutside(e) {
-        console.log(e);
         const inputField = document.querySelector('#rename_the_board');
-        console.log(board);
-        console.log(e.target);
         if (e.target !== inputField) {
-            console.log('kiskacsa');
             board.innerHTML = currentName;
             document.body.removeEventListener('click', handleRenameClickOutside);
             board.addEventListener('click', handleRename);
