@@ -36,19 +36,23 @@ async function handleInputSaveBoardName(e) {
     }
     if (e.key === "Enter") {
         const newName = e.currentTarget.value;
-        const newBoardButton = document.querySelector('button[class="toggle-board-button"][data-board-id="pending_board"]');
-        const newStatusButton = document.querySelector('.add-new-status-button[data-board-id="pending_board"]');
         if (newName.length < 1) {
             e.currentTarget.classList.add("error");
             myInput.closest("div").classList.add("error");
         } else {
-            myInput.closest("div").classList.remove("error");
-            const boardDataResponse = await dataHandler.createNewBoard(newName);
-            await setNewBoardData(board, newBoardButton, newStatusButton, boardDataResponse);
-            board.addEventListener('click', handleRename);
-            document.body.removeEventListener("click", clickOutside);
+            await createNewBoard(newName, myInput, board)
         }
     }
+}
+
+async function createNewBoard(newName, myInput, board){
+    const newBoardButton = document.querySelector('button[class="toggle-board-button"][data-board-id="pending_board"]');
+    const newStatusButton = document.querySelector('.add-new-status-button[data-board-id="pending_board"]');
+    myInput.closest("div").classList.remove("error");
+    const boardDataResponse = await dataHandler.createNewBoard(newName);
+    await setNewBoardData(board, newBoardButton, newStatusButton, boardDataResponse);
+    board.addEventListener('click', handleRename);
+    document.body.removeEventListener("click", clickOutside);
 }
 
 async function setNewBoardData(board, buttonBoard, buttonStatus, data) {
@@ -96,7 +100,6 @@ function removeBoard(board) {
     document.body.removeEventListener("click", clickOutside);
 }
 
-// replace from util
 function clickOutside(e) {
     const input = document.querySelector("#name_new_board");
     if (e.target !== input) {
@@ -149,7 +152,6 @@ function handleWrapper(currentName, board) {
             board.addEventListener('click', handleRename);
         }
     }
-
     return handleRenameClickOutside;
 }
 
@@ -185,7 +187,6 @@ function getFormErrorMessages(useCase){
 
 
 function setUpUserForm(callback, messageObj){
-
     async function handleForm(e){
         e.preventDefault();
         const [username, password] = [e.currentTarget.username, e.currentTarget.password];
@@ -202,9 +203,7 @@ function setUpUserForm(callback, messageObj){
             }
         }
     }
-
     return handleForm
-
 }
 
 function handleFormError(errorMsg){
