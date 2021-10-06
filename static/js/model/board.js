@@ -125,11 +125,11 @@ function handleRename(event) {
     currentRenameInput.focus();
     const fnc = handleWrapper(currentName, board);
     util.wait(100).then(() => document.body.addEventListener('click', fnc));
-    handleInputField(boardID);
+    handleInputField(boardID, fnc, board);
 }
 
 
-function handleInputField(boardID) {
+function handleInputField(boardID, fnc, board) {
     document.querySelector('#rename_the_board').addEventListener('keydown', async (e) => {
         if (e.key === 'Enter') {
             const parentDiv = document.querySelector('.board-container');
@@ -140,6 +140,8 @@ function handleInputField(boardID) {
                 e.currentTarget.parentNode.textContent = newBoardName;
                 await dataHandler.renameCurrentBoard(newBoardName, boardID);
                 parentDiv.classList.remove("error");
+                document.body.removeEventListener('click', fnc);
+                board.addEventListener('click', handleRename);
             }
         }
     });
