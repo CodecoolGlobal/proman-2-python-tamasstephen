@@ -1,5 +1,6 @@
 import util from "../util/util.js";
 import {dataHandler} from "../data/dataHandler.js";
+import {addNewCard, initContainerForDragEvents} from "./cards.js";
 import {boardsManager} from "../controller/boardsManager.js";
 
 export { createStatusBoxes, addNewStatus }
@@ -47,12 +48,15 @@ function createStatusBoxes(statusData, boardId){
                 myInput.closest("div").classList.add("error");
             } else {
                 myInput.closest("div").classList.remove("error");
+                const cardHolder = myInput.closest("div").querySelector(".status-col");
+                const addNewCardBtn = myInput.closest("div").querySelector(".new-card-link");
+                addNewCardBtn.addEventListener("click", addNewCard)
                 const statusResponse = await dataHandler.createNewStatus(newName); //different datahandler func
-                util.checkRequestError(statusResponse);
                 const newStatus = await statusResponse.json();
                 await dataHandler.bindStatusToBoard(newStatus.id, boardId); //we don't need that in other funcs
                 myInput.closest("p").textContent = newName; //different selector
                 setStatusData(newStatus);
+                initContainerForDragEvents(cardHolder);
                 document.body.removeEventListener("click", clickOutsideStatus); //different callback
             }
         }
