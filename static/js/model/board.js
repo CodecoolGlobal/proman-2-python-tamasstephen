@@ -5,7 +5,7 @@ import util from "../util/util.js";
 import {createStatusBoxes, addNewStatus } from "./status.js";
 import {showHideButtonHandler} from "../controller/boardsManager.js";
 import {boardsManager} from "../controller/boardsManager.js"; // need to create a new one -> a more suitable one
-import {addNewCard} from "./cards.js";
+import {addNewCard, initContainerForDragEvents} from "./cards.js";
 
 export {addNewBoard, removeBoard, renameBoard};
 
@@ -75,6 +75,8 @@ async function setStatusBaseContent(board, boardId) {
     }
     const addNewStatusBtn = myBoardContainer.querySelector(".add-new-status-button");
     const toggleBStatusBtn = myBoardContainer.querySelector(".toggle-board-button");
+    const cardHandlers = myStatusContainer.querySelectorAll(".status-col");
+    cardHandlers.forEach(handler => initContainerForDragEvents(handler))
     addNewStatusBtn.addEventListener('click', addNewStatus);
     toggleBStatusBtn.addEventListener('click', showHideButtonHandler);
     const cardLinks = myStatusContainer.querySelectorAll(".new-card-link");
