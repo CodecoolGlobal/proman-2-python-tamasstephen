@@ -1,5 +1,6 @@
 from flask import Flask, render_template, url_for, request
 from dotenv import load_dotenv
+from werkzeug import security
 
 from util import json_response
 import mimetypes
@@ -110,6 +111,18 @@ def update_card_status(card_id):
     new_card_data = request.get_json()
     print(new_card_data)
     return queires.update_card_status(new_card_data, card_id)
+
+
+@app.route("/api/registration", methods=["POST"])
+@json_response
+def handle_registration():
+    username, password = request.get_json()["username"], request.get_json()["password"]
+    is_existing_username = queires.get_existing_username(username)
+    if not is_existing_username:
+        password_hash = security.generate_password_hash(password, method='pbkdf2:sha256', salt_length=16)
+        set_user = queires.setNewUser(username, password_hash)
+        return set_user
+    return False
 
 
 def main():

@@ -1,5 +1,5 @@
 import {dataHandler} from "../data/dataHandler.js";
-import {htmlFactory, htmlTemplates, regBuilder} from "../view/htmlFactory.js";
+import {htmlFactory, htmlTemplates, formBuilder} from "../view/htmlFactory.js";
 import {domManager} from "../view/domManager.js";
 import util from "../util/util.js";
 import {createStatusBoxes, addNewStatus } from "./status.js";
@@ -161,14 +161,13 @@ function handleWrapper(currentName, board) {
 }
 
 function createRegistrationWindow(){
-    const regPopup = regBuilder();
+    const regPopup = formBuilder("Registration");
     document.querySelector("#root").insertAdjacentHTML("beforebegin", regPopup);
     const form = document.querySelector("form");
     const popupOuter = document.querySelector(".popup-wrapper");
     form.addEventListener("submit", handleRegistration);
     popupOuter.addEventListener("click", (e)=> {
         if (e.target === popupOuter){
-            console.log(e.target)
             document.querySelector(".popup-wrapper").remove();
         }
     })
@@ -178,11 +177,11 @@ function createRegistrationWindow(){
 async function handleRegistration(e){
    e.preventDefault();
    const [username, password] = [e.currentTarget.username, e.currentTarget.password];
-   if(username.length < 1 || password.length < 1){
+   if(username.value.length < 1 || password.value.length < 1){
        console.log("WTF are you doing!?");
        //dropErrorMsg("message");
    } else {
-       const isValidUsername = await dataHandler.postRegistrationData(username, password);
+       const isValidUsername = await dataHandler.postRegistrationData(username.value, password.value);
        // if the username is valid the server handles the user login
        if(isValidUsername){
            document.querySelector(".popup-wrapper").remove();

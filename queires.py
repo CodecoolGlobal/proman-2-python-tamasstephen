@@ -161,3 +161,20 @@ def update_card_status(data, card_id):
     return data_manager.execute_select(query, fetchall=False)
 
 
+def get_existing_username(username):
+    query = sql.SQL("""
+        SELECT username FROM users
+        WHERE username = {username}
+    """).format(username=sql.Literal(username))
+    return data_manager.execute_select(query, fetchall=False)
+
+
+def setNewUser(username, password):
+    query = sql.SQL("""
+        INSERT INTO users
+        (username, password)
+        VALUES ({username}, {password})
+        RETURNING *
+    """).format(username=sql.Literal(username),
+                password=sql.Literal(password))
+    return data_manager.execute_select(query, fetchall=False)
