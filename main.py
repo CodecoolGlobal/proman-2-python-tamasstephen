@@ -1,6 +1,7 @@
-from flask import Flask, render_template, url_for, request
+from flask import Flask, render_template, url_for, request, session
 from dotenv import load_dotenv
 from werkzeug import security
+from os import urandom
 
 from util import json_response
 import mimetypes
@@ -9,6 +10,7 @@ import queires
 mimetypes.add_type('application/javascript', '.js')
 app = Flask(__name__)
 load_dotenv()
+app.secret_key = urandom(16)
 
 
 @app.route("/")
@@ -121,6 +123,8 @@ def handle_registration():
     if not is_existing_username:
         password_hash = security.generate_password_hash(password, method='pbkdf2:sha256', salt_length=16)
         set_user = queires.setNewUser(username, password_hash)
+        session['username'] = username
+        session['id'] = set_user['id']
         return set_user
     return False
 

@@ -37,8 +37,8 @@ function cardBuilder(card) {
 export function formBuilder(useCase) {
     return `<div class="popup-wrapper">
                 <div class="popup-form">
-                <h2>${useCase}</h2>
                     <form>
+                        <h2>${useCase}</h2>
                         <label for="username">Username</label>
                         <input type="text" id="username" name="username"> 
                         <label for="password">Password</label>
