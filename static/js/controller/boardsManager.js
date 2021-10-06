@@ -1,10 +1,9 @@
 import {dataHandler} from "../data/dataHandler.js";
 import {htmlFactory, htmlTemplates} from "../view/htmlFactory.js";
 import {domManager} from "../view/domManager.js";
-import {addNewBoard} from "../model/board.js";
+import {addNewBoard, createRegistrationWindow, renameBoard} from "../model/board.js";
 import statusBoardManager from "./statusManager.js";
 import {addNewStatus} from "../model/status.js";
-import {renameBoard} from "../model/board.js";
 import {setUpDropTargets} from "../model/cards.js";
 import util from "../util/util.js";
 
@@ -29,6 +28,7 @@ export let boardsManager = {
                 addNewStatus);
         }
         renameBoard();
+        document.querySelector("#register").addEventListener("click", createRegistrationWindow)
         util.wait(300).then(() => setUpDropTargets());
     },
 };

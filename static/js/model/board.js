@@ -1,5 +1,5 @@
 import {dataHandler} from "../data/dataHandler.js";
-import {htmlFactory, htmlTemplates} from "../view/htmlFactory.js";
+import {htmlFactory, htmlTemplates, regBuilder} from "../view/htmlFactory.js";
 import {domManager} from "../view/domManager.js";
 import util from "../util/util.js";
 import {createStatusBoxes, addNewStatus } from "./status.js";
@@ -7,7 +7,7 @@ import {showHideButtonHandler} from "../controller/boardsManager.js";
 import {boardsManager} from "../controller/boardsManager.js"; // need to create a new one -> a more suitable one
 import {addNewCard, initContainerForDragEvents} from "./cards.js";
 
-export {addNewBoard, removeBoard, renameBoard};
+export {addNewBoard, removeBoard, renameBoard, createRegistrationWindow};
 
 
 function addNewBoard() {
@@ -158,4 +158,37 @@ function handleWrapper(currentName, board) {
     }
 
     return handleRenameClickOutside;
+}
+
+function createRegistrationWindow(){
+    const regPopup = regBuilder();
+    document.querySelector("#root").insertAdjacentHTML("beforebegin", regPopup);
+    const form = document.querySelector("form");
+    const popupOuter = document.querySelector(".popup-wrapper");
+    form.addEventListener("submit", handleRegistration);
+    popupOuter.addEventListener("click", (e)=> {
+        if (e.target === popupOuter){
+            console.log(e.target)
+            document.querySelector(".popup-wrapper").remove();
+        }
+    })
+
+}
+
+async function handleRegistration(e){
+   e.preventDefault();
+   const [username, password] = [e.currentTarget.username, e.currentTarget.password];
+   if(username.length < 1 || password.length < 1){
+       console.log("WTF are you doing!?");
+       //dropErrorMsg("message");
+   } else {
+       const isValidUsername = await dataHandler.postRegistrationData(username, password);
+       // if the username is valid the server handles the user login
+       if(isValidUsername){
+           document.querySelector(".popup-wrapper").remove();
+           location.replace("/");
+       } else {
+           //dropErrorMsg("message");
+       }
+   }
 }
