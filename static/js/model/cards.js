@@ -2,7 +2,7 @@ import {dataHandler} from "../data/dataHandler.js";
 import {htmlFactory, htmlTemplates } from "../view/htmlFactory.js";
 import util from "../util/util.js";
 
-export {addNewCard, setUpDropTargets}
+export {addNewCard, setUpDropTargets, initContainerForDragEvents}
 
 async function addNewCard(e){
    const parent = e.currentTarget.nextElementSibling;
