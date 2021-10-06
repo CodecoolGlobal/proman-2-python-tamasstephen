@@ -7,7 +7,7 @@ import {showHideButtonHandler} from "../controller/boardsManager.js";
 import {boardsManager} from "../controller/boardsManager.js"; // need to create a new one -> a more suitable one
 import {addNewCard, initContainerForDragEvents} from "./cards.js";
 
-export {addNewBoard, removeBoard, renameBoard, createRegistrationWindow};
+export {addNewBoard, removeBoard, renameBoard, createRegistrationWindow, handleLogout};
 
 
 function addNewBoard() {
@@ -190,4 +190,9 @@ async function handleRegistration(e){
            //dropErrorMsg("message");
        }
    }
+}
+
+async function handleLogout(){
+    await dataHandler.handleLogout();
+    location.replace("/");
 }

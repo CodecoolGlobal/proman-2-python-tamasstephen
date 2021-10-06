@@ -97,6 +97,10 @@ export let dataHandler = {
             body: JSON.stringify({username: `${username}`, password: `${password}`})
         })
         return response
+    },
+    async handleLogout(){
+        const response = await fetch("/api/logout");
+        return response
     }
 };
 

@@ -125,8 +125,17 @@ def handle_registration():
         set_user = queires.setNewUser(username, password_hash)
         session['username'] = username
         session['id'] = set_user['id']
+        print(session["id"])
         return set_user
     return False
+
+
+@app.route("/api/logout")
+@json_response
+def logout():
+    username = session.pop("username")
+    user_id = session.pop("id")
+    return {'username': username, 'user_id': user_id}
 
 
 def main():
