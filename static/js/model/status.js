@@ -14,8 +14,8 @@ async function addNewStatus(e) {
     newStatus.querySelector(".status-headline").innerHTML = util.createNewInput("status_name", "create-new-status-name");
     const myInput = document.querySelector("#create-new-status-name");
     myInput.addEventListener("keydown", handleInputSaveStatus);
-    myInput.focus()
-    util.wait(1).then(()=> document.body.addEventListener("click", clickOutsideStatus));
+    myInput.focus();
+    util.wait(1).then(() => document.body.addEventListener("click", clickOutsideStatus));
 }
 
 // more of a html factory function
@@ -31,33 +31,33 @@ function createStatusBoxes(statusData, boardId) {
 }
 
 //TODO: refactor combine with the cards and board
-    async function handleInputSaveStatus(e){
-        const boardId = document.querySelector('.status-box[data-status-id="pending-id"]').dataset.boardId;
-        const myInput = document.querySelector("#create-new-status-name");
-        if (e.key === "Escape"){
-            removeStatusBox(myInput, `.status-box[data-status-id="pending-id"]`, clickOutsideStatus);
-        }
-        if(e.key === "Enter"){
-            const newName = e.currentTarget.value;
-            if (newName.length < 1 ){
-                e.currentTarget.classList.add("error");
-                myInput.closest("div").classList.add("error");
-            } else {
-                await setUpNewStatusListeners(myInput, newName, boardId);
-            }
+async function handleInputSaveStatus(e) {
+    const boardId = document.querySelector('.status-box[data-status-id="pending-id"]').dataset.boardId;
+    const myInput = document.querySelector("#create-new-status-name");
+    if (e.key === "Escape") {
+        removeStatusBox(myInput, `.status-box[data-status-id="pending-id"]`, clickOutsideStatus);
+    }
+    if (e.key === "Enter") {
+        const newName = e.currentTarget.value;
+        if (newName.length < 1) {
+            e.currentTarget.classList.add("error");
+            myInput.closest("div").classList.add("error");
+        } else {
+            await setUpNewStatusListeners(myInput, newName, boardId);
         }
     }
+}
 
-async function setUpNewStatusListeners(myInput, newName, boardId){
+async function setUpNewStatusListeners(myInput, newName, boardId) {
     const cardHolder = myInput.closest("div").querySelector(".status-col");
     const addNewCardBtn = myInput.closest("div").querySelector(".new-card-link");
     const statusResponse = await dataHandler.createNewStatus(newName);
     const newStatus = await statusResponse.json();
     myInput.closest("div").classList.remove("error");
-    addNewCardBtn.addEventListener("click", addNewCard)
+    addNewCardBtn.addEventListener("click", addNewCard);
     await dataHandler.bindStatusToBoard(newStatus.id, boardId);
     myInput.closest("p").textContent = newName;
-    setStatusData(newStatus);
+    setStatusData(newStatus, "pending-id");
     initContainerForDragEvents(cardHolder);
     document.body.removeEventListener("click", clickOutsideStatus);
 }
@@ -75,8 +75,8 @@ function clickOutsideStatus(e) {
     }
 }
 
-function setStatusData(statusData) {
-    const newStatus = document.querySelector('.status-box[data-status-id="pending-id"]');
+function setStatusData(statusData, pendingStatusId) {
+    const newStatus = document.querySelector(`.status-box[data-status-id='${pendingStatusId}']`);
     const statusHeadline = newStatus.querySelector(".status-headline");
     const statusLink = newStatus.querySelector(".new-card-link");
     const statusCol = newStatus.querySelector(".status-col");
@@ -89,14 +89,12 @@ function setStatusData(statusData) {
 
 function renameColumn() {
     const columns = document.querySelectorAll('.status-headline');
-    console.log(columns);
     columns.forEach(column => column.addEventListener('click', handleRenameColumn));
 }
 
 
 function handleRenameColumn(event) {
     const column = event.currentTarget;
-    console.log(column);
     const columnId = column.attributes[2].value;
     const boardId = column.attributes[1].value;
     column.removeEventListener('click', handleRenameColumn);
@@ -104,17 +102,48 @@ function handleRenameColumn(event) {
     column.innerHTML = `<input value="${currentName}"type="text" name="column_name" id="rename_the_column">`;
     let currentInput = document.getElementById('rename_the_column');
     currentInput.focus();
+    const fnc = handleWrapper(currentName, column);
+    util.wait(100).then(() => document.body.addEventListener('click', fnc));
+    checkColumnName(currentInput, columnId, boardId, column);
+}
+
+
+function handleWrapper(currentName, column) {
+    function handleRenameClickOutside(e) {
+        const inputField = document.querySelector('#rename_the_column');
+        if (e.target !== inputField) {
+            column.innerHTML = currentName;
+            document.body.removeEventListener('click', handleRenameClickOutside);
+            column.addEventListener('click', handleRenameColumn);
+            column.parentNode.classList.remove("error");
+        }
+    }
+    return handleRenameClickOutside;
+}
+
+
+function checkColumnName(currentInput, columnId, boardId, column) {
     currentInput.addEventListener('keydown', async (e) => {
         if (e.key === 'Enter') {
             const newColumnName = e.currentTarget.value;
-            e.currentTarget.parentNode.textContent = newColumnName;
-            console.log(newColumnName);
-            if(columnId === '1' || '2' || '3' || '4'){
-                await dataHandler.createNewStatus(newColumnName)
-            }
-            else {
-                console.log('false')
+            if (newColumnName.length < 1) {
+                column.parentNode.classList.add('error');
+            } else {
+                column.parentNode.classList.remove('error');
+                e.currentTarget.parentNode.textContent = newColumnName;
+                const defaultColumns = ['1', '2', '3', '4'];
+                if (defaultColumns.includes(columnId)) {
+                    const statusData = await dataHandler.createNewStatus(newColumnName);
+                    const newStatusNameData = await statusData.json();
+                    await dataHandler.updateStatusInStatusBoard(newStatusNameData.id, columnId, boardId);
+                    setStatusData(newStatusNameData, columnId);
+                    column.addEventListener('click', handleRenameColumn);
+                } else {
+                    await dataHandler.updateStatusTitle(columnId, newColumnName);
+                    column.addEventListener('click', handleRenameColumn);
+                }
             }
         }
     });
 }
+

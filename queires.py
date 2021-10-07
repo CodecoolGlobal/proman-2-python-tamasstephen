@@ -70,7 +70,6 @@ def create_new_board(title):
 
 
 def rename_board(new_board_name, board_id):
-    print('hello')
     query = sql.SQL("""
     UPDATE boards
     SET title = {new_board_name}
@@ -145,6 +144,29 @@ def set_cards_order(cards_data):
         RETURNING id, card_order, title 
     """).format(id=sql.Literal(cards_data["id"]),
                 new_order=sql.Literal(cards_data["order"]))
+    return data_manager.execute_select(query, fetchall=False)
+
+
+def update_status_title(status_id, title):
+    query = sql.SQL("""
+    UPDATE statuses
+    SET title = {title}
+    WHERE id = {status_id}
+    RETURNING *
+    """).format(status_id=sql.Literal(status_id),
+                title=sql.Literal(title))
+    return data_manager.execute_select(query, fetchall=False)
+
+
+def update_status_in_status_board(status_id, column_id, board_id):
+    query = sql.SQL("""
+    UPDATE status_board
+    SET status_id = {status_id}
+    WHERE status_id = {column_id} AND board_id = {board_id}
+    RETURNING *
+    """).format(status_id=sql.Literal(status_id),
+                column_id=sql.Literal(column_id),
+                board_id=sql.Literal(board_id))
     return data_manager.execute_select(query, fetchall=False)
 
 

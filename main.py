@@ -75,6 +75,14 @@ def get_statuses_by_id(board_id):
     return statuses_by_name_and_id
 
 
+@app.route("/api/update_status_title", methods=['POST'])
+@json_response
+def update_status_title():
+    status_id = request.get_json()["status_id"]
+    title = request.get_json()["title"]
+    return queires.update_status_title(status_id, title)
+
+
 @app.route("/api/status_to_board", methods=["POST"])
 @json_response
 def bind_status_to_board():
@@ -102,6 +110,16 @@ def set_cards_order():
     cards_data = request.get_json()["cards"]
     new_data = [queires.set_cards_order(data) for data in cards_data]
     return new_data
+
+
+@app.route("/api/update_status_to_board", methods=['POST'])
+@json_response
+def update_status_id_to_board():
+    new_status_id = request.get_json()["new_status_id"]
+    column_id = request.get_json()["column_id"]
+    board_id = request.get_json()["board_id"]
+
+    return queires.update_status_in_status_board(new_status_id, column_id, board_id)
 
 
 @app.route("/api/update_card_status/<int:card_id>", methods=["PUT"])

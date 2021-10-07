@@ -128,14 +128,13 @@ function handleRename(event) {
 function handleInputField(boardID, fnc, board) {
     document.querySelector('#rename_the_board').addEventListener('keydown', async (e) => {
         if (e.key === 'Enter') {
-            const parentDiv = document.querySelector('.board-container');
             let newBoardName = e.currentTarget.value;
             if (newBoardName.length < 1) {
-                parentDiv.classList.add("error");
+                board.classList.add("error");
             } else {
                 e.currentTarget.parentNode.textContent = newBoardName;
                 await dataHandler.renameCurrentBoard(newBoardName, boardID);
-                parentDiv.classList.remove("error");
+                board.classList.remove("error");
                 document.body.removeEventListener('click', fnc);
                 board.addEventListener('click', handleRename);
             }
@@ -150,6 +149,7 @@ function handleWrapper(currentName, board) {
             board.innerHTML = currentName;
             document.body.removeEventListener('click', handleRenameClickOutside);
             board.addEventListener('click', handleRename);
+            board.classList.remove("error");
         }
     }
     return handleRenameClickOutside;
