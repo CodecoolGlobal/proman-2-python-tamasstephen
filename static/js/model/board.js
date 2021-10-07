@@ -7,25 +7,52 @@ import {showHideButtonHandler} from "../controller/boardsManager.js";
 import {boardsManager} from "../controller/boardsManager.js"; // need to create a new one -> a more suitable one
 import {addNewCard, initContainerForDragEvents} from "./cards.js";
 
-export {addNewBoard, removeBoard, renameBoard, createRegistrationWindow, handleLogout, createLoginWindow};
+export {addNewBoard, removeBoard, renameBoard, createRegistrationWindow, handleLogout, createLoginWindow, getBoardsByUser};
 
 
-function addNewBoard() {
+function addNewBoard(e) {
+    const targetId = e.currentTarget.id
     const boardBuilder = htmlFactory(htmlTemplates.board);
     const board = boardBuilder({"title": "", "id": "pending_board"});
     util.wait(10).then(() => {
         domManager.addChild("#root", board);
-        nameNewBoard();
+        targetId === "create_board" ? nameNewBoard() : nameNewBoard(true);
     });
 }
 
-function nameNewBoard() {
+function nameNewBoard(isPrivate=false) {
+    console.log(isPrivate)
     const headline = document.querySelector('div[data-board-id="pending_board"]');
     headline.innerHTML = `<input type="text" name="board_name" id="name_new_board">`;
     const input = document.querySelector("#name_new_board");
-    input.addEventListener("keydown", handleInputSaveBoardName);
+    const handleSave = setUpHandleInputSave(isPrivate)
+    input.addEventListener("keydown", handleSave);
     input.focus();
     util.wait(100).then(() => document.body.addEventListener('click', clickOutside));
+}
+
+function setUpHandleInputSave(isPrivate=false){
+
+    async function handleInputSaveBoardName(e) {
+        console.log("saving", isPrivate);
+        const board = document.querySelector('div [data-board-id="pending_board"]');
+        const myInput = document.querySelector("#name_new_board");
+        if (e.key === "Escape") {
+            removeBoard(board);
+        }
+        if (e.key === "Enter") {
+            const newName = e.currentTarget.value;
+            if (newName.length < 1) {
+                e.currentTarget.classList.add("error");
+                myInput.closest("div").classList.add("error");
+            } else {
+                const boardData = await createNewBoard(newName, myInput, board);
+                isPrivate ? await dataHandler.setBoardToPrivate(boardData.id, await dataHandler.getUserId()) : "";
+            }
+        }
+    }
+
+   return handleInputSaveBoardName
 }
 
 async function handleInputSaveBoardName(e) {
@@ -40,7 +67,7 @@ async function handleInputSaveBoardName(e) {
             e.currentTarget.classList.add("error");
             myInput.closest("div").classList.add("error");
         } else {
-            await createNewBoard(newName, myInput, board)
+            await createNewBoard(newName, myInput, board);
         }
     }
 }
@@ -53,6 +80,7 @@ async function createNewBoard(newName, myInput, board){
     await setNewBoardData(board, newBoardButton, newStatusButton, boardDataResponse);
     board.addEventListener('click', handleRename);
     document.body.removeEventListener("click", clickOutside);
+    return boardDataResponse
 }
 
 async function setNewBoardData(board, buttonBoard, buttonStatus, data) {
@@ -216,4 +244,10 @@ function handleFormError(errorMsg){
 async function handleLogout(){
     await dataHandler.handleLogout();
     location.replace("/");
+}
+
+async function getBoardsByUser(){
+    const isUserSignedIn = await dataHandler.getUserId();
+    const boards = await dataHandler.getBoardsByUserId(isUserSignedIn);
+    return boards;
 }
