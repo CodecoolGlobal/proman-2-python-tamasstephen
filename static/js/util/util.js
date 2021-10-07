@@ -11,7 +11,7 @@ const util = {
         const parentDiv = element.closest(parentString);
         parentDiv.remove();
         document.body.removeEventListener("click", callBack);
-}
+},
 }
 
 export default util

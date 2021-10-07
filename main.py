@@ -148,6 +148,29 @@ def logout():
     return {'username': username, 'user_id': user_id}
 
 
+@app.route("/api/get_user_id")
+@json_response
+def get_user_id():
+    user_id = session.get("id")
+    return user_id if user_id else -1
+
+
+@app.route("/api/get_boards/<user_id>")
+@json_response
+def get_boards_for_user_id(user_id):
+    boards = queires.get_public_boards() if user_id == "-1" else queires.get_boards_by_user_id(user_id)
+    return boards
+
+
+@app.route("/api/set_board_to_private", methods=["POST"])
+@json_response
+def set_private_board():
+    print(request.get_json())
+    user_id, board_id = request.get_json()["user_id"], request.get_json()["board_id"]
+    private_board = queires.set_board_to_private(user_id, board_id)
+    return private_board
+
+
 def main():
     app.run(debug=True)
 

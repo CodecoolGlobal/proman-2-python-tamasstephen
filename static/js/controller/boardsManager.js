@@ -1,7 +1,7 @@
 import {dataHandler} from "../data/dataHandler.js";
 import {htmlFactory, htmlTemplates} from "../view/htmlFactory.js";
 import {domManager} from "../view/domManager.js";
-import {addNewBoard, createRegistrationWindow, renameBoard, handleLogout, createLoginWindow} from "../model/board.js";
+import {addNewBoard, createRegistrationWindow, renameBoard, handleLogout, createLoginWindow, getBoardsByUser} from "../model/board.js";
 import statusBoardManager from "./statusManager.js";
 import {addNewStatus} from "../model/status.js";
 import {setUpDropTargets} from "../model/cards.js";
@@ -11,7 +11,7 @@ export let boardsManager = {
     loadBoards: async function () {
         const addBoard = document.querySelector("#create_board");
         addBoard.addEventListener("click", addNewBoard);
-        const boards = await dataHandler.getBoards();
+        const boards = await getBoardsByUser();
         for (let board of boards) {
             const boardBuilder = htmlFactory(htmlTemplates.board);
             const content = boardBuilder(board);
@@ -34,6 +34,7 @@ export let boardsManager = {
             document.querySelector("#login").addEventListener("click", createLoginWindow);
         } else {
             document.querySelector("#logout").addEventListener("click", handleLogout);
+            document.querySelector("#create_private_board").addEventListener("click", addNewBoard);
         }
         util.wait(300).then(() => setUpDropTargets());
     },
