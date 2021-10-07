@@ -1,5 +1,5 @@
 import {dataHandler} from "../data/dataHandler.js";
-import {htmlFactory, htmlTemplates} from "../view/htmlFactory.js";
+import {htmlFactory, htmlTemplates, formBuilder, errorBlock} from "../view/htmlFactory.js";
 import {domManager} from "../view/domManager.js";
 import util from "../util/util.js";
 import {createStatusBoxes, addNewStatus } from "./status.js";
@@ -7,7 +7,7 @@ import {showHideButtonHandler} from "../controller/boardsManager.js";
 import {boardsManager} from "../controller/boardsManager.js"; // need to create a new one -> a more suitable one
 import {addNewCard, initContainerForDragEvents} from "./cards.js";
 
-export {addNewBoard, removeBoard, renameBoard};
+export {addNewBoard, removeBoard, renameBoard, createRegistrationWindow, handleLogout, createLoginWindow};
 
 
 function addNewBoard() {
@@ -36,19 +36,23 @@ async function handleInputSaveBoardName(e) {
     }
     if (e.key === "Enter") {
         const newName = e.currentTarget.value;
-        const newBoardButton = document.querySelector('button[class="toggle-board-button"][data-board-id="pending_board"]');
-        const newStatusButton = document.querySelector('.add-new-status-button[data-board-id="pending_board"]');
         if (newName.length < 1) {
             e.currentTarget.classList.add("error");
             myInput.closest("div").classList.add("error");
         } else {
-            myInput.closest("div").classList.remove("error");
-            const boardDataResponse = await dataHandler.createNewBoard(newName);
-            await setNewBoardData(board, newBoardButton, newStatusButton, boardDataResponse);
-            board.addEventListener('click', handleRename);
-            document.body.removeEventListener("click", clickOutside);
+            await createNewBoard(newName, myInput, board)
         }
     }
+}
+
+async function createNewBoard(newName, myInput, board){
+    const newBoardButton = document.querySelector('button[class="toggle-board-button"][data-board-id="pending_board"]');
+    const newStatusButton = document.querySelector('.add-new-status-button[data-board-id="pending_board"]');
+    myInput.closest("div").classList.remove("error");
+    const boardDataResponse = await dataHandler.createNewBoard(newName);
+    await setNewBoardData(board, newBoardButton, newStatusButton, boardDataResponse);
+    board.addEventListener('click', handleRename);
+    document.body.removeEventListener("click", clickOutside);
 }
 
 async function setNewBoardData(board, buttonBoard, buttonStatus, data) {
@@ -65,15 +69,15 @@ async function setStatusBaseContent(board, boardId) {
     const myBoardContainer = board.closest(".board-container");
     const myStatusContainer = myBoardContainer.querySelector('div[class="status-container"]');
     const statusResponse = await dataHandler.getDefaultStatuses();
-    if (statusResponse.statusText === "OK") {
-        const baseStatuses = await statusResponse.json();
-        for (const status of baseStatuses) {
-            myStatusContainer.appendChild(createStatusBoxes(status, boardId));
-            await connectStatusWithBoard(status.id, boardId);
-        }
-    } else {
-        console.log("Where is our request?");
+    const baseStatuses = await statusResponse.json();
+    for (const status of baseStatuses) {
+        myStatusContainer.appendChild(createStatusBoxes(status, boardId));
+        await connectStatusWithBoard(status.id, boardId);
     }
+    setUpBoardListeners(myBoardContainer, myStatusContainer);
+}
+
+function setUpBoardListeners(myBoardContainer, myStatusContainer){
     const addNewStatusBtn = myBoardContainer.querySelector(".add-new-status-button");
     const toggleBStatusBtn = myBoardContainer.querySelector(".toggle-board-button");
     const cardHandlers = myStatusContainer.querySelectorAll(".status-col");
@@ -87,11 +91,7 @@ async function setStatusBaseContent(board, boardId) {
 
 async function connectStatusWithBoard(statusId, boardId) {
     const connectionData = await dataHandler.bindStatusToBoard(statusId, boardId);
-    if (connectionData.statusText === "OK") {
-        const responseValue = await connectionData.json();
-    } else {
-        console.log("Could not connect board to status");
-    }
+    await connectionData.json();
 }
 
 function removeBoard(board) {
@@ -100,7 +100,6 @@ function removeBoard(board) {
     document.body.removeEventListener("click", clickOutside);
 }
 
-// replace from util
 function clickOutside(e) {
     const input = document.querySelector("#name_new_board");
     if (e.target !== input) {
@@ -108,12 +107,10 @@ function clickOutside(e) {
     }
 }
 
-
 function renameBoard() {
     const boards = document.querySelectorAll('.board');
     boards.forEach(board => board.addEventListener('click', handleRename));
 }
-
 
 function handleRename(event) {
     const board = event.currentTarget;
@@ -127,7 +124,6 @@ function handleRename(event) {
     util.wait(100).then(() => document.body.addEventListener('click', fnc));
     handleInputField(boardID, fnc, board);
 }
-
 
 function handleInputField(boardID, fnc, board) {
     document.querySelector('#rename_the_board').addEventListener('keydown', async (e) => {
@@ -156,6 +152,68 @@ function handleWrapper(currentName, board) {
             board.addEventListener('click', handleRename);
         }
     }
-
     return handleRenameClickOutside;
+}
+
+function createRegistrationWindow(){
+    setUpPopupForm("Registration")
+}
+
+function createLoginWindow(){
+    setUpPopupForm("Login")
+}
+
+function setUpPopupForm(useCase){
+    const regPopup = formBuilder(useCase);
+    document.querySelector("#root").insertAdjacentHTML("beforebegin", regPopup);
+    const form = document.querySelector("form");
+    const popupOuter = document.querySelector(".popup-wrapper");
+    const popupBehaviour = useCase === "Registration"
+        ? setUpUserForm(dataHandler.postRegistrationData, getFormErrorMessages("Registration"))
+        : setUpUserForm(dataHandler.handleLogin, getFormErrorMessages("Login"));
+    form.addEventListener("submit", popupBehaviour);
+    popupOuter.addEventListener("click", (e)=> {
+        if (e.target === popupOuter){
+            document.querySelector(".popup-wrapper").remove();
+        }
+    })
+}
+
+function getFormErrorMessages(useCase){
+   return useCase === "Registration"
+       ? {firstError: "Both fields must be filled!", secondError: "This username already exists!"}
+       : {firstError: "Both fields must be filled!", secondError: "The username or password is incorrect!"};
+}
+
+
+function setUpUserForm(callback, messageObj){
+    async function handleForm(e){
+        e.preventDefault();
+        const [username, password] = [e.currentTarget.username, e.currentTarget.password];
+        if(username.value.length < 1 || password.value.length < 1){
+            handleFormError(messageObj.firstError)
+        } else {
+            const validUserResponse = await callback(username.value, password.value);
+            const isValidUsername = await validUserResponse.json(); // after refactoring we don't need this line
+            if(isValidUsername){
+                document.querySelector(".popup-wrapper").remove();
+                location.replace("/");
+            } else {
+                handleFormError(messageObj.secondError)
+            }
+        }
+    }
+    return handleForm
+}
+
+function handleFormError(errorMsg){
+   const existingError = document.querySelector(".error-msg-element");
+   existingError ? existingError.remove() : "";
+   const errorDiv = errorBlock(errorMsg);
+   document.querySelector("form").querySelector("h2").insertAdjacentHTML("afterend", errorDiv)
+}
+
+async function handleLogout(){
+    await dataHandler.handleLogout();
+    location.replace("/");
 }
