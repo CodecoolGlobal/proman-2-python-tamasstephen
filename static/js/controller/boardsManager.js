@@ -7,6 +7,8 @@ import {addNewStatus} from "../model/status.js";
 import {renameBoard} from "../model/board.js";
 import {setUpDropTargets} from "../model/cards.js";
 import util from "../util/util.js";
+import {renameColumn} from "../model/status.js";
+
 
 export let boardsManager = {
     loadBoards: async function () {
@@ -28,6 +30,7 @@ export let boardsManager = {
                 'click',
                 addNewStatus);
         }
+        renameColumn();
         renameBoard();
         util.wait(300).then(() => setUpDropTargets());
     },
