@@ -76,7 +76,6 @@ function setCardHtmlData(newCardData, card, name){
 }
 
 function setUpDropTargets(){
-   console.log(document.body);
    const cards = document.querySelectorAll(".card");
    const cardHolders = document.querySelectorAll(".status-col");
    cards.forEach(card => {

@@ -208,3 +208,32 @@ def get_password_hash(user_id):
         WHERE id = {user_id} 
     """).format(user_id=sql.Literal(user_id))
     return data_manager.execute_select(query, fetchall=False)
+
+
+def get_public_boards():
+    query = sql.SQL("""
+        SELECT * FROM boards
+        where private = false or private is null 
+    """)
+    return data_manager.execute_select(query)
+
+
+def get_boards_by_user_id(user_id):
+    query = sql.SQL("""
+        SELECT * FROM boards
+        WHERE private = FALSE OR  user_id = {user_id} OR private is null
+    """).format(user_id=sql.Literal(user_id))
+    return data_manager.execute_select(query)
+
+
+def set_board_to_private(user_id, board_id):
+    query = sql.SQL("""
+    UPDATE boards
+        SET user_id = {user_id},
+            private = true
+        WHERE id = {board_id} 
+        RETURNING *
+    """).format(user_id=sql.Literal(user_id),
+                board_id=sql.Literal(board_id))
+    return data_manager.execute_select(query, fetchall=False)
+
