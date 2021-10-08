@@ -60,6 +60,7 @@ async function setUpNewStatusListeners(myInput, newName, boardId) {
     setStatusData(newStatus, "pending-id");
     initContainerForDragEvents(cardHolder);
     document.body.removeEventListener("click", clickOutsideStatus);
+    renameColumn();
 }
 
 function removeStatusBox(element, parentString, callBack) {
@@ -104,7 +105,7 @@ function handleRenameColumn(event) {
     currentInput.focus();
     const fnc = handleWrapper(currentName, column);
     util.wait(100).then(() => document.body.addEventListener('click', fnc));
-    checkColumnName(currentInput, columnId, boardId, column);
+    checkColumnName(currentInput, columnId, boardId, column, fnc);
 }
 
 
@@ -122,7 +123,7 @@ function handleWrapper(currentName, column) {
 }
 
 
-function checkColumnName(currentInput, columnId, boardId, column) {
+function checkColumnName(currentInput, columnId, boardId, column, fnc) {
     currentInput.addEventListener('keydown', async (e) => {
         if (e.key === 'Enter') {
             const newColumnName = e.currentTarget.value;
@@ -133,12 +134,14 @@ function checkColumnName(currentInput, columnId, boardId, column) {
                 e.currentTarget.parentNode.textContent = newColumnName;
                 const defaultColumns = ['1', '2', '3', '4'];
                 if (defaultColumns.includes(columnId)) {
+                    document.body.removeEventListener('click', fnc);
                     const statusData = await dataHandler.createNewStatus(newColumnName);
                     const newStatusNameData = await statusData.json();
                     await dataHandler.updateStatusInStatusBoard(newStatusNameData.id, columnId, boardId);
                     setStatusData(newStatusNameData, columnId);
                     column.addEventListener('click', handleRenameColumn);
                 } else {
+                    document.body.removeEventListener('click', fnc);
                     await dataHandler.updateStatusTitle(columnId, newColumnName);
                     column.addEventListener('click', handleRenameColumn);
                 }
