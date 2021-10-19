@@ -7,7 +7,7 @@ import {showHideButtonHandler} from "../controller/boardsManager.js";
 import {boardsManager} from "../controller/boardsManager.js"; // need to create a new one -> a more suitable one
 import {addNewCard, initContainerForDragEvents} from "./cards.js";
 
-export {addNewBoard, removeBoard, renameBoard, createRegistrationWindow, handleLogout, createLoginWindow, getBoardsByUser};
+export {addNewBoard, removeBoard, renameBoard, createRegistrationWindow, handleLogout, createLoginWindow, getBoardsByUser, handleWrapper};
 
 
 function addNewBoard(e) {
@@ -170,14 +170,14 @@ function handleInputField(boardID, fnc, board) {
     });
 }
 
-function handleWrapper(currentName, board) {
+function handleWrapper(currentName, target) {
     function handleRenameClickOutside(e) {
         const inputField = document.querySelector('#rename_the_board');
         if (e.target !== inputField) {
-            board.innerHTML = currentName;
+            target.innerHTML = currentName;
             document.body.removeEventListener('click', handleRenameClickOutside);
-            board.addEventListener('click', handleRename);
-            board.classList.remove("error");
+            target.addEventListener('click', handleRename);
+            target.classList.remove("error");
         }
     }
     return handleRenameClickOutside;

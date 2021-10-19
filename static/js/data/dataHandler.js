@@ -24,12 +24,20 @@ export let dataHandler = {
         const response = await apiPost("/api/create_board", {title: `${boardTitle}`});
         return response;
     },
-    setBoardToPrivate: async function (boardId, userId){
+    setBoardToPrivate: async function (boardId, userId) {
         const response = await apiPost("/api/set_board_to_private",
-                {board_id: `${boardId}`, user_id: `${userId}`});
+            {board_id: `${boardId}`, user_id: `${userId}`});
     },
-    createPrivateBoard: async function(boardTitle, userId){
-        const response = await apiPost("/api/set_private_board", {})
+    createPrivateBoard: async function (boardTitle, userId) {
+        const response = await apiPost("/api/set_private_board", {});
+    },
+    renameCurrentCard: async function (newCardName, cardId) {
+        const response = await fetch("/api/rename_card", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({title: `${newCardName}`, card_id: `${cardId}`})
+        });
+        return await response.json();
     },
     renameCurrentBoard: async function (newBoardName, boardId) {
         const response = await fetch("/api/rename_board", {
@@ -127,16 +135,16 @@ export let dataHandler = {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({username: `${username}`, password: `${password}`})
-        })
-        return response
+        });
+        return response;
     },
-    getUserId: async function(){
+    getUserId: async function () {
         const response = await apiGet("/api/get_user_id");
-        return response
+        return response;
     },
-    getBoardsByUserId: async function(userId){
-        const response = await apiGet(`/api/get_boards/${userId}`)
-        return response
+    getBoardsByUserId: async function (userId) {
+        const response = await apiGet(`/api/get_boards/${userId}`);
+        return response;
     },
 };
 

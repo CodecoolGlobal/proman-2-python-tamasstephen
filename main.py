@@ -49,7 +49,7 @@ def create_new_board():
 
 @app.route("/api/rename_board", methods=["POST"])
 @json_response
-def rename_board():
+def rename_the_board():
     title = request.get_json()["title"]
     board_id = request.get_json()["board_id"]
     return queires.rename_board(title, board_id)
@@ -129,6 +129,17 @@ def update_card_status(card_id):
     return queires.update_card_status(new_card_data, card_id)
 
 
+@app.route("/api/rename_card", methods=["POST"])
+@json_response
+def update_card():
+    card_id = request.get_json()["card_id"]
+    new_card_name = request.get_json()["title"]
+    print('kiskuta')
+    print(card_id)
+    print(new_card_name)
+    return queires.rename_card(card_id, new_card_name)
+
+
 @app.route("/api/registration", methods=["POST"])
 @json_response
 def handle_registration():
@@ -190,7 +201,8 @@ def set_private_board():
 
 
 def main():
-    app.run(debug=True)
+    app.run(debug=True,
+            port=5001)
 
     # Serving the favicon
     with app.app_context():
