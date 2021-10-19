@@ -80,6 +80,17 @@ def rename_board(new_board_name, board_id):
     return data_manager.execute_select(query)
 
 
+def rename_card(card_id, title):
+    query = sql.SQL("""
+    UPDATE cards
+    SET title = {title}
+    WHERE id = {card_id}
+    RETURNING title, id
+    """).format(title=sql.Literal(title),
+                card_id=sql.Literal(card_id))
+    return data_manager.execute_select(query)
+
+
 def get_statuses_by_board_id(board_id):
     query = sql.SQL("""
     select status_id from status_board
