@@ -268,3 +268,18 @@ form h2 {
     border-radius: 8px;
     background-color: rgba(255, 99, 71, .1);
 }
+
+button.delete-board {
+    background-color: transparent;
+    outline: 1px solid black;
+    color: black;
+}
+
+button.delete-board:hover {
+    background-color: black;
+    color: white;
+}
+
+button {
+    cursor: pointer;
+}

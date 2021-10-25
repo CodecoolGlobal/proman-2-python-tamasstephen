@@ -22,6 +22,7 @@ function boardBuilder(board) {
                     <div class="board-menu-wrapper">
                         <button class="add-new-status-button invisible" data-board-id="${board.id}">Add New Status</button>
                         <button class="toggle-board-button" data-board-id="${board.id}">Show Cards</button>
+                        <button class="delete-board" data-board-id="${board.id}">Delete</button>
                     </div>
                 </div>
                 <div class="status-container" data-board-id="${board.id}">
