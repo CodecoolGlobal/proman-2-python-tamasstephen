@@ -200,6 +200,18 @@ def set_private_board():
     return private_board
 
 
+@app.route("/api/delete-board", methods=["POST"])
+def delete_board():
+    board_id = request.get_json()["board_id"]
+    print(board_id)
+    deleted_status = queires.delete_status_by_board_id(board_id)
+    print(deleted_status)
+    deleted_relation = queires.delete_status_board_connection(board_id)
+    deleted_table = queires.delete_board_by_id(board_id)
+    print(deleted_status, deleted_relation, deleted_table)
+    return {"deleted": deleted_relation}
+
+
 def main():
     app.run(debug=True,
             port=5001)

@@ -28,6 +28,10 @@ export let boardsManager = {
                 `.add-new-status-button[data-board-id="${board.id}"`,
                 'click',
                 addNewStatus);
+            domManager.addEventListener(
+                `.delete-board[data-board-id="${board.id}"`,
+                'click',
+                deleteBoard);
         }
         renameColumn();
         renameBoard();
@@ -49,5 +53,11 @@ export function showHideButtonHandler(clickEvent) {
     document.querySelector(`.add-new-status-button[data-board-id="${boardId}"]`).classList.toggle("invisible");
 }
 
-
+async function deleteBoard(e){
+    const boardId = e.currentTarget.dataset.boardId;
+    const deleteButton = e.currentTarget;
+    const boardDivToRemove = deleteButton.closest(".board-container");
+    await dataHandler.deleteBoard(boardId);
+    boardDivToRemove.remove()
+}
 
