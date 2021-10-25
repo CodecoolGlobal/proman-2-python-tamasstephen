@@ -242,3 +242,35 @@ def set_board_to_private(user_id, board_id):
                 board_id=sql.Literal(board_id))
     return data_manager.execute_select(query, fetchall=False)
 
+
+def delete_status_by_board_id(board_id):
+    query = sql.SQL("""
+        DELETE 
+        FROM statuses
+        WHERE statuses.id = ANY(
+            SELECT status_id
+            FROM status_board
+            WHERE (board_id = {})) AND NOT (statuses.id = ANY({}::int[]))
+            RETURNING *
+    """).format(sql.Literal(board_id), sql.Literal([1, 2, 3, 4]))
+    return data_manager.execute_select(query)
+
+
+def delete_status_board_connection(board_id):
+    query = sql.SQL("""
+        DELETE
+        FROM status_board
+        WHERE board_id = {} 
+        RETURNING *
+    """).format(sql.Literal(board_id))
+    return data_manager.execute_select(query)
+
+
+def delete_board_by_id(board_id):
+    query = sql.SQL("""
+        DELETE
+        FROM boards
+        WHERE id = {} 
+        RETURNING id, title
+    """).format(sql.Literal(board_id))
+    return data_manager.execute_select(query, fetchall=False)

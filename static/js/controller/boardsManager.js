@@ -1,7 +1,7 @@
 import {dataHandler} from "../data/dataHandler.js";
 import {htmlFactory, htmlTemplates} from "../view/htmlFactory.js";
 import {domManager} from "../view/domManager.js";
-import {addNewBoard, createRegistrationWindow, renameBoard, handleLogout, createLoginWindow, getBoardsByUser} from "../model/board.js";
+import {addNewBoard, createRegistrationWindow, renameBoard, handleLogout, createLoginWindow, getBoardsByUser, deleteBoard} from "../model/board.js";
 import statusBoardManager from "./statusManager.js";
 import {addNewStatus} from "../model/status.js";
 import {setUpDropTargets} from "../model/cards.js";
@@ -28,6 +28,10 @@ export let boardsManager = {
                 `.add-new-status-button[data-board-id="${board.id}"`,
                 'click',
                 addNewStatus);
+            domManager.addEventListener(
+                `.delete-board[data-board-id="${board.id}"`,
+                'click',
+                deleteBoard);
         }
         renameColumn();
         renameBoard();
@@ -48,6 +52,5 @@ export function showHideButtonHandler(clickEvent) {
     document.querySelector(`.status-container[data-board-id="${boardId}"]`).classList.toggle("invisible");
     document.querySelector(`.add-new-status-button[data-board-id="${boardId}"]`).classList.toggle("invisible");
 }
-
 
 

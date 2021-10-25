@@ -10,6 +10,7 @@ CREATE TABLE status_board
         on delete cascade,
     foreign key (status_id)
         references statuses (id)
+        on delete cascade
 );
 
 

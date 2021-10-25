@@ -146,6 +146,10 @@ export let dataHandler = {
         const response = await apiGet(`/api/get_boards/${userId}`);
         return response;
     },
+    deleteBoard: async function(boardId){
+        const response = await apiPost('/api/delete-board', {"board_id": `${boardId}`})
+        return response
+    }
 };
 
 async function apiGet(url) {
