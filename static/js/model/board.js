@@ -7,7 +7,7 @@ import {showHideButtonHandler} from "../controller/boardsManager.js";
 import {boardsManager} from "../controller/boardsManager.js"; // need to create a new one -> a more suitable one
 import {addNewCard, initContainerForDragEvents} from "./cards.js";
 
-export {addNewBoard, removeBoard, renameBoard, createRegistrationWindow, handleLogout, createLoginWindow, getBoardsByUser, handleWrapper};
+export {addNewBoard, removeBoard, renameBoard, createRegistrationWindow, handleLogout, createLoginWindow, getBoardsByUser, handleWrapper, deleteBoard};
 
 
 function addNewBoard(e) {
@@ -75,20 +75,22 @@ async function handleInputSaveBoardName(e) {
 async function createNewBoard(newName, myInput, board){
     const newBoardButton = document.querySelector('button[class="toggle-board-button"][data-board-id="pending_board"]');
     const newStatusButton = document.querySelector('.add-new-status-button[data-board-id="pending_board"]');
+    const newDeleteButton = document.querySelector('.delete-board[data-board-id="pending_board"]');
     myInput.closest("div").classList.remove("error");
     const boardDataResponse = await dataHandler.createNewBoard(newName);
-    await setNewBoardData(board, newBoardButton, newStatusButton, boardDataResponse);
+    await setNewBoardData(board, newBoardButton, newStatusButton, newDeleteButton, boardDataResponse);
     board.addEventListener('click', handleRename);
     document.body.removeEventListener("click", clickOutside);
     return boardDataResponse
 }
 
-async function setNewBoardData(board, buttonBoard, buttonStatus, data) {
+async function setNewBoardData(board, buttonBoard, buttonStatus, buttonDelete, data) {
     const [boardId, boardName] = [data["id"], data["title"]];
     board.textContent = boardName;
     board.dataset.boardId = boardId;
     buttonBoard.dataset.boardId = boardId;
     buttonStatus.dataset.boardId = boardId;
+    buttonDelete.dataset.boardId = boardId;
     board.closest(".board-container").querySelector(".status-container").dataset.boardId = boardId;
     await setStatusBaseContent(board, boardId);
 }
@@ -109,9 +111,11 @@ function setUpBoardListeners(myBoardContainer, myStatusContainer){
     const addNewStatusBtn = myBoardContainer.querySelector(".add-new-status-button");
     const toggleBStatusBtn = myBoardContainer.querySelector(".toggle-board-button");
     const cardHandlers = myStatusContainer.querySelectorAll(".status-col");
-    cardHandlers.forEach(handler => initContainerForDragEvents(handler))
+    const deleteButton = myBoardContainer.querySelector('.delete-board');
+    cardHandlers.forEach(handler => initContainerForDragEvents(handler));
     addNewStatusBtn.addEventListener('click', addNewStatus);
     toggleBStatusBtn.addEventListener('click', showHideButtonHandler);
+    deleteButton.addEventListener('click', deleteBoard);
     const cardLinks = myStatusContainer.querySelectorAll(".new-card-link");
     cardLinks.forEach(link => link.addEventListener('click', addNewCard));
     myStatusContainer.classList.add("invisible");
@@ -250,4 +254,12 @@ async function getBoardsByUser(){
     const isUserSignedIn = await dataHandler.getUserId();
     const boards = await dataHandler.getBoardsByUserId(isUserSignedIn);
     return boards;
+}
+
+async function deleteBoard(e){
+    const boardId = e.currentTarget.dataset.boardId;
+    const deleteButton = e.currentTarget;
+    const boardDivToRemove = deleteButton.closest(".board-container");
+    await dataHandler.deleteBoard(boardId);
+    boardDivToRemove.remove()
 }
