@@ -3,10 +3,6 @@
 ## Story
 
 ### Another email from the client
-
-```
-From: Mark Smith <ceo@thepartner.com>
-
 Subject: Re: Proman progress
 
 Well, we are closing up on Trello so we can go for world domination soon!
@@ -21,10 +17,6 @@ Just as last week, send us the sprint backlog ASAP, and we'll meet at the demo.
 Remember, quality work is a must, we want to conquer the world with this new product!
 
 Oh and I hope you've learnt from Jacob's mistake about arriving late to the office...
-
-Mark
-```
-
 ## What are you going to learn?
 
 - Understand practical AJAX usage.
@@ -53,11 +45,3 @@ None
 ## Background materials
 
 - <i class="far fa-exclamation"></i> [Deployment to Heroku](project/curriculum/materials/pages/devops/deploy-flask-app-to-heroku.md)
-- <i class="far fa-exclamation"></i> [Callbacks](project/curriculum/materials/pages/javascript/javascript-callbacks.md)
-- <i class="far fa-exclamation"></i> [API, AJAX](project/curriculum/materials/pages/web/the-last-missing-piece-api.md)
-- <i class="far fa-exclamation"></i> [RESTful](project/curriculum/materials/pages/web/restful.md)
-- [Pass by value vs by reference](project/curriculum/materials/pages/javascript/javascript-pass-by-value-vs-reference.md)
-- [Modules](project/curriculum/materials/pages/javascript/javascript-modules.md)
-- [Keyword this](project/curriculum/materials/pages/javascript/javascript-this.md)
-- [Tips & Tricks](project/curriculum/materials/pages/web/web-with-python-tips.md)
-

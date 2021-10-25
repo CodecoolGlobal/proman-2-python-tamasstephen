@@ -1,3 +1,270 @@
+:root{
+    --color-error: red;
+    --color-card-border: #d3d3d3;
+    --color-verylight-gray: #f4f0ec;
+    --color-cta-blue: #2e40b3;
+    --base-font-size: 1rem;
+    --color-link-blue: #4169e1;
+    --color-cta-primary: #ff7f50;
+
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    background-image: linear-gradient(#e4e7f5, #faf1ed 100%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100vh;
+}
+
+
 #boards {
     background-color: green;
+}
+
+.board-container{
+    margin: 0 auto;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 70%;
+}
+
+.board {
+    font-weight: 700;
+    margin-bottom: .25rem;
+    max-width: 200px;
+}
+
+.card {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.825rem;
+}
+
+.board-header{
+    width: 100%;: width:;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 2rem rgba(0, 0, 0, .15);
+}
+
+nav {
+    box-shadow: 0 0 1rem rgba(0, 0, 0, .15);
+    padding: 1rem;
+    margin-bottom: 2rem;
+    background-image: linear-gradient(to left, #e4e7f5, #faf1ed);
+    width: 100%;
+}
+
+.wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 70%;
+    margin: 0 auto;
+}
+
+#root{
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+
+input[type="text"],
+input[type="password"]{
+    border-style: hidden;
+    border: 1px solid black;
+    border-radius: 2px;
+    max-width: 90%;
+    height: 1.5rem;
+}
+
+input[type="text"].error{
+    border: 1px solid var(--color-error);
+}
+
+input[type="text"].error {
+    content: "The provided field is empty";
+    display: block;
+    color: var(--color-error);
+}
+
+input[type="submit"] {
+    height: 2rem;
+    background-color: var(--color-cta-blue);
+    border-radius: 4px;
+    border-style: hidden;
+    color: white;
+    font-weight: 700;
+}
+
+button {
+    padding: .5rem;
+    min-width: 80px;
+    background-color: var(--color-cta-primary);
+    color: white;
+    font-weight: bold;
+    border-radius: 4px;
+    border-style: hidden;
+}
+
+div.error::before {
+    content: "The provided field is empty";
+    color: var(--color-error);
+}
+
+.status-container {
+    transition-duration: .2s;
+    display: flex;
+    flex-wrap: wrap;
+    width:100%;
+    padding-top: var(--base-font-size);
+    padding-bottom: var(--base-font-size);
+}
+
+.status-col {
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+    min-height: 50px;
+    align-items: center;
+}
+
+.status-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 1rem;
+    background-color: rgba(250, 250, 250, .6);
+    border-radius: 8px;
+    text-align: center;
+    margin-right: .5rem;
+    margin-bottom: .5rem;
+}
+
+
+.invisible {
+    opacity: 0;
+    visibility: hidden;
+    height: 0;
+    widht: 0;
+}
+
+.card {
+    text-align: left;
+    width: 150px;
+    height: 80px;
+    border: 1px solid var(--color-card-border);
+    border-radius: 8px;
+    padding: .75rem;
+    background-color: white;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, .15);
+}
+
+.status-headline {
+    text-transform: uppercase;
+    color: dimgray;
+    max-width: 150px;
+    margin-bottom: 0;
+}
+
+.new-card-link{
+    color: var(--color-link-blue);
+    font-weight: 600;
+    font-size: .825rem;
+    padding-left: .5rem;
+}
+
+.card + .card {
+    margin-top: .5rem;
+}
+
+.board-header {
+    display: flex;
+}
+
+.board-header div, #rename-board {
+    margin-right: 1rem;
+}
+
+.nav-button {
+    background-color: #2e40b3;
+    padding: .75rem;
+}
+
+.status-col {
+    min-height: 200px;
+}
+
+.popup-form,
+.popup-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.popup-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 100%;
+    background-color: rgba(0, 0, 0, .3);
+}
+
+form {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    padding-top: 2.5rem;
+    padding-left: 7rem;
+    padding-right: 7rem;
+    padding-bottom: 1.5rem;
+    border-radius: 8px;
+}
+
+form > input {
+    margin-bottom: 1rem;
+}
+
+form > label {
+    margin-bottom: .25rem;
+}
+
+.popup-form label {
+    text-transform: capitalize;
+}
+
+#username,
+#password {
+    max-width: 100%;
+}
+
+form h2 {
+    padding: 0;
+    margin-top: 0;
+}
+
+.error-msg-element{
+    margin-bottom: .75rem;
+    padding: .5rem;
+    font-size: .725rem;
+    font-weight: 600;
+    border: 2px solid red;
+    color: red;
+    border-radius: 8px;
+    background-color: rgba(255, 99, 71, .1);
 }
