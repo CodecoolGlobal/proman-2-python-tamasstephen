@@ -1,5 +1,5 @@
 import {dataHandler} from "../data/dataHandler.js";
-import {createStatusBoxes} from "../model/status.js";
+import {createStatusBoxes, deleteStatus} from "../model/status.js";
 import {cardsManager} from "./cardsManager.js";
 import {addNewCard} from "../model/cards.js";
 import {renameColumn} from "../model/status.js";
@@ -13,7 +13,9 @@ async function statusBoardManager(board) {
     for (const status of boardStatuses) {
         myStatusContainer.appendChild(createStatusBoxes(status, board.id));
         const addCardLinks = myStatusContainer.querySelectorAll(`.new-card-link[data-board-id="${board.id}"]`);
+        const deleteStatusLinks = myStatusContainer.querySelectorAll(`.delete-status[data-board-id="${board.id}"]`)
         addCardLinks.forEach(link => link.addEventListener("click", addNewCard));
+        deleteStatusLinks.forEach(link => link.addEventListener("click", deleteStatus))
     }
     myStatusContainer.classList.add("invisible");
     cardsManager.loadCards(boardId);

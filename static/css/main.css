@@ -180,11 +180,21 @@ div.error::before {
     margin-bottom: 0;
 }
 
+.delete-status,
 .new-card-link{
-    color: var(--color-link-blue);
     font-weight: 600;
     font-size: .825rem;
     padding-left: .5rem;
+}
+
+.new-card-link{
+    color: var(--color-link-blue);
+}
+
+.delete-status {
+    color: var(--color-cta-primary);
+    margin-top: 1rem;
+    margin-bottom: 0;
 }
 
 .card + .card {
