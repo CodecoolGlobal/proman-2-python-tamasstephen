@@ -256,13 +256,23 @@ def delete_status_by_board_id(board_id):
     return data_manager.execute_select(query)
 
 
-def delete_status_board_connection(board_id):
+def delete_status_board_connection(column_id, column='board_id'):
     query = sql.SQL("""
         DELETE
         FROM status_board
-        WHERE board_id = {} 
+        WHERE {column} = {column_id} 
         RETURNING *
-    """).format(sql.Literal(board_id))
+    """).format(column_id=sql.Literal(column_id), column=sql.Identifier(column))
+    return data_manager.execute_select(query)
+
+
+def delete_status_board_connection_by_ids(board_id, status_id):
+    query = sql.SQL("""
+        DELETE
+        FROM status_board
+        WHERE board_id = {}  AND status_id = {}
+        RETURNING *
+    """).format(sql.Literal(board_id), sql.Literal(status_id))
     return data_manager.execute_select(query)
 
 
@@ -273,4 +283,14 @@ def delete_board_by_id(board_id):
         WHERE id = {} 
         RETURNING id, title
     """).format(sql.Literal(board_id))
+    return data_manager.execute_select(query, fetchall=False)
+
+
+def delete_status_by_id(status_id):
+    query = sql.SQL("""
+        DELETE
+        FROM statuses
+        WHERE id = {}
+        RETURNING id, title
+    """).format(sql.Literal(status_id))
     return data_manager.execute_select(query, fetchall=False)

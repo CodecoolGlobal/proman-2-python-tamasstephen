@@ -203,10 +203,19 @@ def set_private_board():
 @app.route("/api/delete-board", methods=["POST"])
 def delete_board():
     board_id = request.get_json()["board_id"]
-    deleted_status = queires.delete_status_by_board_id(board_id)
+    queires.delete_status_by_board_id(board_id)
     deleted_relation = queires.delete_status_board_connection(board_id)
-    deleted_table = queires.delete_board_by_id(board_id)
+    queires.delete_board_by_id(board_id)
     return {"deleted": deleted_relation}
+
+
+@app.route("/api/delete-status", methods=["POST"])
+def delete_status():
+    board_id, status_id = request.get_json()["board_id"], request.get_json()["status_id"]
+    deleted_relation = queires.delete_status_board_connection_by_ids(board_id, status_id)
+    if int(status_id) not in [1, 2, 3, 4]:
+        queires.delete_status_by_id(status_id)
+    return {"relation": deleted_relation}
 
 
 def main():

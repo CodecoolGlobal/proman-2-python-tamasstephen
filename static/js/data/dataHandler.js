@@ -149,6 +149,12 @@ export let dataHandler = {
     deleteBoard: async function(boardId){
         const response = await apiPost('/api/delete-board', {"board_id": `${boardId}`})
         return response
+    },
+    deleteStatusById: async function(board_id, status_id){
+        const response = await apiPost('/api/delete-status',
+                                {"board_id": `${board_id}`,
+                                        "status_id": `${status_id}`})
+        return response
     }
 };
 
