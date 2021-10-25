@@ -256,13 +256,13 @@ def delete_status_by_board_id(board_id):
     return data_manager.execute_select(query)
 
 
-def delete_status_board_connection(board_id):
+def delete_status_board_connection(column_id, column='board_id'):
     query = sql.SQL("""
         DELETE
         FROM status_board
-        WHERE board_id = {} 
+        WHERE {column} = {column_id} 
         RETURNING *
-    """).format(sql.Literal(board_id))
+    """).format(column_id=sql.Literal(column_id), column=sql.Identifier(column))
     return data_manager.execute_select(query)
 
 
