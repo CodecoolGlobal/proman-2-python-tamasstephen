@@ -1,4 +1,3 @@
-import {dataHandler} from "../data/dataHandler.js";
 import {htmlFactory, htmlTemplates} from "../view/htmlFactory.js";
 import {domManager} from "../view/domManager.js";
 import {addNewBoard, createRegistrationWindow, renameBoard, handleLogout, createLoginWindow, getBoardsByUser, deleteBoard} from "../model/board.js";

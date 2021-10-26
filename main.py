@@ -118,7 +118,6 @@ def update_status_id_to_board():
     new_status_id = request.get_json()["new_status_id"]
     column_id = request.get_json()["column_id"]
     board_id = request.get_json()["board_id"]
-
     return queires.update_status_in_status_board(new_status_id, column_id, board_id)
 
 
@@ -134,9 +133,6 @@ def update_card_status(card_id):
 def update_card():
     card_id = request.get_json()["card_id"]
     new_card_name = request.get_json()["title"]
-    print('kiskuta')
-    print(card_id)
-    print(new_card_name)
     return queires.rename_card(card_id, new_card_name)
 
 
@@ -194,7 +190,6 @@ def get_boards_for_user_id(user_id):
 @app.route("/api/set_board_to_private", methods=["POST"])
 @json_response
 def set_private_board():
-    print(request.get_json())
     user_id, board_id = request.get_json()["user_id"], request.get_json()["board_id"]
     private_board = queires.set_board_to_private(user_id, board_id)
     return private_board
