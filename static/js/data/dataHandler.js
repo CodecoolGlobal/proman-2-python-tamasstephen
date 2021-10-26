@@ -147,7 +147,7 @@ export let dataHandler = {
         return response;
     },
     deleteCard: async function (cardId) {
-        const response = await fetch(`/api/delete-card/${cardId}`, {
+        const response = await fetch(`/api/delete-card`, {
             method: "POST",
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({cardId: `${cardId}`})

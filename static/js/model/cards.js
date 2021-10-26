@@ -24,7 +24,7 @@ function insertNewCardToParent(parent, newCard) {
     myInput.focus();
     myInput.addEventListener("keydown", handleInputSaveCard);
     document.body.addEventListener("click", clickOutsideCard);
-    card.addEventListener('click', renameCard);
+    card.querySelector('p').addEventListener('click', renameCard);
 }
 
 // implement by the status and board cases
@@ -35,8 +35,6 @@ async function handleInputSaveCard(e) {
     }
     if (e.key === "Enter") {
         const newName = e.currentTarget.value;
-        console.log(newName);
-        console.log(myInput);
         if (newName.length < 1) {
             e.currentTarget.classList.add("error");
             myInput.closest("div").classList.add("error");
@@ -60,7 +58,6 @@ async function setUpNewCard(myInput) {
     const boardId = myInput.closest(".status-col").dataset.boardId;
     const statusId = myInput.closest(".status-col").dataset.statusId;
     const newStatus = await dataHandler.createNewCard(newName, boardId, statusId, 1); //different datahandler func
-    console.log(card, 'tomi');
     setCardHtmlData(newStatus, card, newName);
     await setNewCardOrder(card);
     document.body.removeEventListener("click", clickOutsideCard);
@@ -68,13 +65,11 @@ async function setUpNewCard(myInput) {
 }
 
 async function setNewCardOrder(card) {
-    console.log(card, 'hello');
     const cardIds = getNewCardOrder(card);
     await dataHandler.setCardOrder(cardIds);
 }
 
 function getNewCardOrder(card) {
-    console.log(card);
     const cards = card.closest(".status-col").querySelectorAll(".card");
     const cardIdsInOrder = Array.from(cards).map((card, index) => {
         return {id: card.dataset.cardId, order: index + 1};
@@ -106,12 +101,14 @@ function initCardForDragEvents(card) {
 }
 
 function initContainerForDragEvents(holder) {
+    holder.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+    })
     holder.addEventListener("dragover", handleDragOverContainer);
     holder.addEventListener("drop", handleDropContainer);
 }
 
 function handleDragStart(e) {
-    console.log(e);
     e.currentTarget.classList.add("dragged");
     const parent = e.currentTarget.closest(".status-col");
     saveDropDataToDataTransfer(e.dataTransfer, parent);
@@ -138,11 +135,9 @@ async function handleDrop(e) {
 }
 
 async function handleDropContainer(e) {
-    console.log(e.currentTarget.firstElementChild)
     if (!e.currentTarget.firstElementChild) {
         e.preventDefault();
         const grabbedCard = document.querySelector(".dragged");
-        console.log(grabbedCard);
         e.currentTarget.appendChild(grabbedCard);
         const dataToDigest = getUpdateData(e.currentTarget, e.dataTransfer, grabbedCard);
         await updateCardDropChanges(dataToDigest, isOldStatus(dataToDigest));
@@ -167,19 +162,14 @@ function isOldStatus(newData) {
 
 async function updateCardDropChanges(newData, isOldStatus) {
     const card = document.querySelector(`[data-card-id="${newData.cardId}"]`);
-    console.log(isOldStatus)
     if (isOldStatus) {
-        console.log('1');
         await setNewCardOrder(card);
     } else {
         await dataHandler.updateCardStatus(newData.newBoardId, newData.newStatusId, newData.cardId);
-        console.log('2');
         await setNewCardOrder(card);
         const oldStatusCol = document.querySelector(`.status-col[data-status-id="${newData.statusId}"][data-board-id="${newData.boardId}"]`);
         const oldColFirstCard = oldStatusCol.firstElementChild;
         if (oldColFirstCard) {
-            console.log(oldColFirstCard);
-            console.log('3');
             await setNewCardOrder(oldColFirstCard);
         }
     }
@@ -190,7 +180,7 @@ function handleDragOver(e) {
 }
 
 function handleDragOverContainer(e) {
-    if (!e.currentTarget.firstChild) {
+    if (!e.currentTarget.firstElementChild) {
         e.preventDefault();
     }
 }
@@ -222,7 +212,7 @@ function inputFieldChecker(card, wrapper) {
             if (newCardName.length < 1) {
                 card.classList.add('error');
             } else {
-                const cardId = card.attributes[2].value;
+                const cardId = card.closest('.card').dataset.cardId;
                 e.currentTarget.parentNode.textContent = newCardName;
                 await dataHandler.renameCurrentCard(newCardName, cardId);
                 card.classList.remove('error');
@@ -236,6 +226,7 @@ function inputFieldChecker(card, wrapper) {
 function cardHandleWrapper(currentName, target) {
     function handleRenameClickOutside(e) {
         const inputField = document.querySelector('#rename_the_card');
+
         if (e.target !== inputField) {
             target.innerHTML = currentName;
             document.body.removeEventListener('click', handleRenameClickOutside);
@@ -249,7 +240,6 @@ function cardHandleWrapper(currentName, target) {
 
 function addEventOnBin() {
     const bins = document.querySelectorAll('.trash');
-    console.log(bins);
     bins.forEach(bin => bin.addEventListener('click', async (event) => {
         event.currentTarget.parentNode.remove();
         await dataHandler.deleteCard(event.currentTarget.parentNode.dataset.cardId);

@@ -247,6 +247,7 @@ def delete_card(card_id):
     query = sql.SQL("""
     DELETE FROM cards
     WHERE id = {card_id}
+    RETURNING id
     """).format(card_id=sql.Literal(card_id))
     return data_manager.execute_select(query, fetchall=False)
 
