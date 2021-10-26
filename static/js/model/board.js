@@ -48,7 +48,6 @@ function setUpHandleInputSave(isPrivate=false){
             }
         }
     }
-
    return handleInputSaveBoardName
 }
 
@@ -89,17 +88,26 @@ async function setStatusBaseContent(board, boardId) {
 }
 
 function setUpBoardListeners(myBoardContainer, myStatusContainer){
-    const addNewStatusBtn = myBoardContainer.querySelector(".add-new-status-button");
-    const toggleBStatusBtn = myBoardContainer.querySelector(".toggle-board-button");
-    const cardHandlers = myStatusContainer.querySelectorAll(".status-col");
-    const deleteButton = myBoardContainer.querySelector('.delete-board');
-    cardHandlers.forEach(handler => initContainerForDragEvents(handler));
-    addNewStatusBtn.addEventListener('click', addNewStatus);
-    toggleBStatusBtn.addEventListener('click', showHideButtonHandler);
-    deleteButton.addEventListener('click', deleteBoard);
-    const cardLinks = myStatusContainer.querySelectorAll(".new-card-link");
-    cardLinks.forEach(link => link.addEventListener('click', addNewCard));
+    const boardElementsObj = getBoardElementsObj(myBoardContainer, myStatusContainer);
+    setUpBoardEvents(boardElementsObj)
     myStatusContainer.classList.add("invisible");
+}
+
+function getBoardElementsObj(myBoardContainer, myStatusContainer){
+    const boardObj = {addNewStatusBtn: myBoardContainer.querySelector(".add-new-status-button"),
+                    toggleBStatusBtn: myBoardContainer.querySelector(".toggle-board-button"),
+                    cardHandlers: myStatusContainer.querySelectorAll(".status-col"),
+                    deleteButton: myBoardContainer.querySelector('.delete-board'),
+                    cardLinks: myStatusContainer.querySelectorAll(".new-card-link")}
+    return boardObj;
+}
+
+function setUpBoardEvents(domObj){
+    domObj.cardHandlers.forEach(handler => initContainerForDragEvents(handler));
+    domObj.addNewStatusBtn.addEventListener('click', addNewStatus);
+    domObj.toggleBStatusBtn.addEventListener('click', showHideButtonHandler);
+    domObj.deleteButton.addEventListener('click', deleteBoard);
+    domObj.cardLinks.forEach(link => link.addEventListener('click', addNewCard));
 }
 
 async function connectStatusWithBoard(statusId, boardId) {

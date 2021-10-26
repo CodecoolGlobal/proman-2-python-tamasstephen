@@ -293,3 +293,11 @@ button.delete-board:hover {
 button {
     cursor: pointer;
 }
+
+.logo-first {
+    color: var(--color-cta-primary);
+}
+
+.logo-last {
+    color: var(--color-cta-blue);
+}
