@@ -146,6 +146,14 @@ export let dataHandler = {
         const response = await apiGet(`/api/get_boards/${userId}`);
         return response;
     },
+    deleteCard: async function (cardId) {
+        const response = await fetch(`/api/delete-card/${cardId}`, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({cardId: `${cardId}`})
+        });
+        return response
+    }
 };
 
 async function apiGet(url) {

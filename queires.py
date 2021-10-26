@@ -242,3 +242,11 @@ def set_board_to_private(user_id, board_id):
                 board_id=sql.Literal(board_id))
     return data_manager.execute_select(query, fetchall=False)
 
+
+def delete_card(card_id):
+    query = sql.SQL("""
+    DELETE FROM cards
+    WHERE id = {card_id}
+    """).format(card_id=sql.Literal(card_id))
+    return data_manager.execute_select(query, fetchall=False)
+

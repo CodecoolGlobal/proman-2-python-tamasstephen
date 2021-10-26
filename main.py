@@ -200,6 +200,12 @@ def set_private_board():
     return private_board
 
 
+@app.route('/api/delete-card/<int:card_id>', methods=["POST"])
+@json_response
+def delete_card_from_db(card_id):
+    return queires.delete_card(card_id)
+
+
 def main():
     app.run(debug=True,
             port=5001)
