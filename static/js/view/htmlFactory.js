@@ -1,17 +1,19 @@
 export const htmlTemplates = {
     board: 1,
     card: 2
-}
+};
 
 export function htmlFactory(template) {
     switch (template) {
         case htmlTemplates.board:
-            return boardBuilder
+            return boardBuilder;
         case htmlTemplates.card:
-            return cardBuilder
+            return cardBuilder;
         default:
-            console.error("Undefined template: " + template)
-            return () => { return "" }
+            console.error("Undefined template: " + template);
+            return () => {
+                return "";
+            };
     }
 }
 
@@ -32,7 +34,8 @@ function boardBuilder(board) {
 }
 
 function cardBuilder(card) {
-    return `<div draggable="true" class="card" data-card-id="${card.id}">${card.title}</div>`;
+    return `
+    <div draggable="true" class="card" data-card-id="${card.id}"><p class="rename">${card.title}</p><i class="fas fa-trash-alt trash"></i></div>`;
 }
 
 export function formBuilder(useCase) {
@@ -47,9 +50,9 @@ export function formBuilder(useCase) {
                         <input type="submit" value="Submit"> 
                     </form> 
                 </div>
-            </div>`
+            </div>`;
 }
 
-export function errorBlock(msg){
-   return `<div class="error-msg-element">${msg}</div>`
+export function errorBlock(msg) {
+    return `<div class="error-msg-element">${msg}</div>`;
 }

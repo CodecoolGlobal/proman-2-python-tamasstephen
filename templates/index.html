@@ -1,40 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
-        <title>ProMan</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <title>ProMan</title>
 
-        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon/favicon.ico') }}">
-        <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}">
-        <link rel="icon" type="image/png" sizes="96x96" href="{{ url_for('static', filename='favicon/favicon-96x96.png') }}">
-        <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon/favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32"
+          href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="96x96"
+          href="{{ url_for('static', filename='favicon/favicon-96x96.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16"
+          href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}">
 
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
-        <script type="module" src="{{ url_for('static', filename='js/main.js') }}" defer></script>
-    </head>
-    <body>
-        <nav>
-            <div class="wrapper">
-                <div class="logo">ProMan</div>
-                <div class="nav-buttons">
-                    <button id="create_board" class="nav-button">Add new board</button>
-                    {% if session['username'] %}
-                        <button id="create_private_board" class="nav-button">Add private board</button>
-                        <button id="logout" class="nav-button">Logout</button>
-                    {% else %}
-                        <button id="login" class="nav-button">Login</button>
-                        <button id="register" class="nav-button">Registration</button>
-                    {% endif %}
-                </div>
-            </div>
-        </nav>
-        <div id="root">
-
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+    <script src="https://kit.fontawesome.com/89941c44c6.js" crossorigin="anonymous"></script>
+    <script type="module" src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+</head>
+<body>
+<nav>
+    <div class="wrapper">
+        <div class="logo">ProMan</div>
+        <div class="nav-buttons">
+            <button id="create_board" class="nav-button">Add new board</button>
+            {% if session['username'] %}
+                <button id="create_private_board" class="nav-button">Add private board</button>
+                <button id="logout" class="nav-button">Logout</button>
+            {% else %}
+                <button id="login" class="nav-button">Login</button>
+                <button id="register" class="nav-button">Registration</button>
+            {% endif %}
         </div>
-    </body>
+    </div>
+</nav>
+<div id="root">
+
+</div>
+</body>
 </html>

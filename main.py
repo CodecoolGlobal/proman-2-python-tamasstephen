@@ -218,6 +218,13 @@ def delete_status():
     return {"relation": deleted_relation}
 
 
+@app.route('/api/delete-card', methods=["POST"])
+@json_response
+def delete_card_from_db():
+    card_id = request.get_json()["cardId"]
+    return queires.delete_card(int(card_id))
+
+
 def main():
     app.run(debug=True,
             port=5001)
