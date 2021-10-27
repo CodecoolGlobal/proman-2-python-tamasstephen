@@ -2,7 +2,7 @@ import {dataHandler} from "../data/dataHandler.js";
 import {htmlFactory, htmlTemplates, formBuilder, errorBlock} from "../view/htmlFactory.js";
 import {domManager} from "../view/domManager.js";
 import util from "../util/util.js";
-import {createStatusBoxes, addNewStatus } from "./status.js";
+import {createStatusBoxes, addNewStatus, deleteStatus } from "./status.js";
 import {showHideButtonHandler} from "../controller/boardsManager.js";
 import {addNewCard, initContainerForDragEvents} from "./cards.js";
 
@@ -98,7 +98,8 @@ function getBoardElementsObj(myBoardContainer, myStatusContainer){
                     toggleBStatusBtn: myBoardContainer.querySelector(".toggle-board-button"),
                     cardHandlers: myStatusContainer.querySelectorAll(".status-col"),
                     deleteButton: myBoardContainer.querySelector('.delete-board'),
-                    cardLinks: myStatusContainer.querySelectorAll(".new-card-link")}
+                    cardLinks: myStatusContainer.querySelectorAll(".new-card-link"),
+                    deleteStatusLinks: myStatusContainer.querySelectorAll(".delete-status")}
     return boardObj;
 }
 
@@ -108,6 +109,7 @@ function setUpBoardEvents(domObj){
     domObj.toggleBStatusBtn.addEventListener('click', showHideButtonHandler);
     domObj.deleteButton.addEventListener('click', deleteBoard);
     domObj.cardLinks.forEach(link => link.addEventListener('click', addNewCard));
+    domObj.deleteStatusLinks.forEach(link => link.addEventListener('click', deleteStatus))
 }
 
 async function connectStatusWithBoard(statusId, boardId) {
