@@ -1,7 +1,6 @@
 import util from "../util/util.js";
 import {dataHandler} from "../data/dataHandler.js";
 import {addNewCard, initContainerForDragEvents} from "./cards.js";
-import {boardsManager} from "../controller/boardsManager.js";
 
 export {createStatusBoxes, addNewStatus, renameColumn, deleteStatus};
 

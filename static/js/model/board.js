@@ -4,7 +4,6 @@ import {domManager} from "../view/domManager.js";
 import util from "../util/util.js";
 import {createStatusBoxes, addNewStatus } from "./status.js";
 import {showHideButtonHandler} from "../controller/boardsManager.js";
-import {boardsManager} from "../controller/boardsManager.js"; // need to create a new one -> a more suitable one
 import {addNewCard, initContainerForDragEvents} from "./cards.js";
 
 export {addNewBoard, removeBoard, renameBoard, createRegistrationWindow, handleLogout, createLoginWindow, getBoardsByUser, handleWrapper, deleteBoard};
@@ -21,7 +20,6 @@ function addNewBoard(e) {
 }
 
 function nameNewBoard(isPrivate=false) {
-    console.log(isPrivate)
     const headline = document.querySelector('div[data-board-id="pending_board"]');
     headline.innerHTML = `<input type="text" name="board_name" id="name_new_board">`;
     const input = document.querySelector("#name_new_board");
@@ -34,7 +32,6 @@ function nameNewBoard(isPrivate=false) {
 function setUpHandleInputSave(isPrivate=false){
 
     async function handleInputSaveBoardName(e) {
-        console.log("saving", isPrivate);
         const board = document.querySelector('div [data-board-id="pending_board"]');
         const myInput = document.querySelector("#name_new_board");
         if (e.key === "Escape") {
@@ -51,26 +48,9 @@ function setUpHandleInputSave(isPrivate=false){
             }
         }
     }
-
    return handleInputSaveBoardName
 }
 
-async function handleInputSaveBoardName(e) {
-    const board = document.querySelector('div [data-board-id="pending_board"]');
-    const myInput = document.querySelector("#name_new_board");
-    if (e.key === "Escape") {
-        removeBoard(board);
-    }
-    if (e.key === "Enter") {
-        const newName = e.currentTarget.value;
-        if (newName.length < 1) {
-            e.currentTarget.classList.add("error");
-            myInput.closest("div").classList.add("error");
-        } else {
-            await createNewBoard(newName, myInput, board);
-        }
-    }
-}
 
 async function createNewBoard(newName, myInput, board){
     const newBoardButton = document.querySelector('button[class="toggle-board-button"][data-board-id="pending_board"]');
@@ -108,17 +88,26 @@ async function setStatusBaseContent(board, boardId) {
 }
 
 function setUpBoardListeners(myBoardContainer, myStatusContainer){
-    const addNewStatusBtn = myBoardContainer.querySelector(".add-new-status-button");
-    const toggleBStatusBtn = myBoardContainer.querySelector(".toggle-board-button");
-    const cardHandlers = myStatusContainer.querySelectorAll(".status-col");
-    const deleteButton = myBoardContainer.querySelector('.delete-board');
-    cardHandlers.forEach(handler => initContainerForDragEvents(handler));
-    addNewStatusBtn.addEventListener('click', addNewStatus);
-    toggleBStatusBtn.addEventListener('click', showHideButtonHandler);
-    deleteButton.addEventListener('click', deleteBoard);
-    const cardLinks = myStatusContainer.querySelectorAll(".new-card-link");
-    cardLinks.forEach(link => link.addEventListener('click', addNewCard));
+    const boardElementsObj = getBoardElementsObj(myBoardContainer, myStatusContainer);
+    setUpBoardEvents(boardElementsObj)
     myStatusContainer.classList.add("invisible");
+}
+
+function getBoardElementsObj(myBoardContainer, myStatusContainer){
+    const boardObj = {addNewStatusBtn: myBoardContainer.querySelector(".add-new-status-button"),
+                    toggleBStatusBtn: myBoardContainer.querySelector(".toggle-board-button"),
+                    cardHandlers: myStatusContainer.querySelectorAll(".status-col"),
+                    deleteButton: myBoardContainer.querySelector('.delete-board'),
+                    cardLinks: myStatusContainer.querySelectorAll(".new-card-link")}
+    return boardObj;
+}
+
+function setUpBoardEvents(domObj){
+    domObj.cardHandlers.forEach(handler => initContainerForDragEvents(handler));
+    domObj.addNewStatusBtn.addEventListener('click', addNewStatus);
+    domObj.toggleBStatusBtn.addEventListener('click', showHideButtonHandler);
+    domObj.deleteButton.addEventListener('click', deleteBoard);
+    domObj.cardLinks.forEach(link => link.addEventListener('click', addNewCard));
 }
 
 async function connectStatusWithBoard(statusId, boardId) {
