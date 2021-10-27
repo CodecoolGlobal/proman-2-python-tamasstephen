@@ -25,6 +25,8 @@ function insertNewCardToParent(parent, newCard) {
     myInput.addEventListener("keydown", handleInputSaveCard);
     document.body.addEventListener("click", clickOutsideCard);
     card.querySelector('p').addEventListener('click', renameCard);
+    console.log(card.querySelector('i'))
+    card.querySelector('i').addEventListener('click', deleteCardFromDb);
 }
 
 // implement by the status and board cases
@@ -103,7 +105,7 @@ function initCardForDragEvents(card) {
 function initContainerForDragEvents(holder) {
     holder.addEventListener('dragenter', (e) => {
         e.preventDefault();
-    })
+    });
     holder.addEventListener("dragover", handleDragOverContainer);
     holder.addEventListener("drop", handleDropContainer);
 }
@@ -240,9 +242,11 @@ function cardHandleWrapper(currentName, target) {
 
 function addEventOnBin() {
     const bins = document.querySelectorAll('.trash');
-    bins.forEach(bin => bin.addEventListener('click', async (event) => {
-        event.currentTarget.parentNode.remove();
-        await dataHandler.deleteCard(event.currentTarget.parentNode.dataset.cardId);
-    }));
+    bins.forEach(bin => bin.addEventListener('click', deleteCardFromDb));
+}
+
+async function deleteCardFromDb(event) {
+    event.currentTarget.parentNode.remove();
+    await dataHandler.deleteCard(event.currentTarget.parentNode.dataset.cardId);
 }
 
