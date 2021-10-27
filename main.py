@@ -1,7 +1,8 @@
-from flask import Flask, render_template, url_for, request, session
+from flask import Flask, render_template, url_for, request, session, Response, redirect
 from dotenv import load_dotenv
 from werkzeug import security
 from os import urandom
+
 
 from util import json_response
 import mimetypes
@@ -11,6 +12,7 @@ mimetypes.add_type('application/javascript', '.js')
 app = Flask(__name__)
 load_dotenv()
 app.secret_key = urandom(16)
+boards = len(queires.get_boards())
 
 
 @app.route("/")
@@ -218,6 +220,19 @@ def delete_status():
 def delete_card_from_db():
     card_id = request.get_json()["cardId"]
     return queires.delete_card(int(card_id))
+
+
+@app.route('/api/fire-server-event')
+def listen_for_board_changes():
+
+    def listen_for_changes():
+        global boards
+        current_boards = boards
+        if current_boards != len(queires.get_boards()):
+            boards = len(queires.get_boards())
+            return f"\ndata: 'fire'\nevent: omg\n\n"
+
+    return Response(listen_for_changes(), content_type="text/event-stream")
 
 
 def main():
