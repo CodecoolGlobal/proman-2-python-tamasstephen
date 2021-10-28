@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, session, Response, redirect, jsonify
+from flask import Flask, render_template, url_for, request, session
 from dotenv import load_dotenv
 from werkzeug import security
 from os import urandom
@@ -13,6 +13,9 @@ app = Flask(__name__)
 load_dotenv()
 app.secret_key = urandom(16)
 socketio = SocketIO(app)
+
+
+EVENTS = {'create_board': 'create_b', 'delete_board': 'delete_b'}
 
 
 @app.route("/")
@@ -45,9 +48,9 @@ def get_cards_for_board(board_id: int):
 @app.route("/api/create_board", methods=["POST"])
 @json_response
 def create_new_board():
-    fire_create_board_event()
     title = request.get_json()["title"]
     board_data = queires.create_new_board(title)
+    fire_server_event(EVENTS['create_board'], board_data['id'])
     return board_data
 
 
@@ -205,6 +208,7 @@ def delete_board():
     queires.delete_status_by_board_id(board_id)
     deleted_relation = queires.delete_status_board_connection(board_id)
     queires.delete_board_by_id(board_id)
+    fire_server_event(EVENTS['delete_board'], board_id)
     return {"deleted": deleted_relation}
 
 
@@ -229,8 +233,8 @@ def my_event():
     emit('after connect', {'data': 'got it!'})
 
 
-def fire_create_board_event():
-    socketio.emit('fire', {'data': 'got it!'}, broadcast=True)
+def fire_server_event(event, board_id):
+    socketio.emit(f'{event}', {'data': f'{board_id}'}, broadcast=True)
 
 
 def main():

@@ -17,23 +17,31 @@
     <link rel="icon" type="image/png" sizes="16x16"
           href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
-    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js" integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs" crossorigin="anonymous"></script>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"
+            integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
+            crossorigin="anonymous"></script>
 
     <script src="https://kit.fontawesome.com/89941c44c6.js" crossorigin="anonymous"></script>
     <script type="module" src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </head>
 <body>
 <script type="module">
+
   import { io } from "https://cdn.socket.io/4.3.2/socket.io.esm.min.js";
+
+
   const socket = io("http://localhost:5000", {transports: ['websocket', 'polling', 'flashsocket']});
-  socket.on("connect", (socket)=>{
-      console.log(socket);
-      console.log("running");
-  });
-  socket.on("fire", (socket)=>{
+
+  socket.on("connect", ()=> console.log("Connection established"));
+  socket.on("create_b", (socket)=>{
       console.log("board created");
       console.log(socket);
   });
+  socket.on("delete_b", (socket)=>{
+      console.log(socket);
+      console.log("board_deleted");
+  })
+
 </script>
 <nav>
     <div class="wrapper">
