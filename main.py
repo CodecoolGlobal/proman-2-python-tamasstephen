@@ -1,9 +1,7 @@
 from flask import Flask, render_template, url_for, request, session
 from dotenv import load_dotenv
 from werkzeug import security
-from os import urandom
 from flask_socketio import SocketIO, emit
-
 from util import json_response
 import mimetypes
 import queires
@@ -11,7 +9,7 @@ import queires
 mimetypes.add_type('application/javascript', '.js')
 app = Flask(__name__)
 load_dotenv()
-app.secret_key = urandom(16)
+app.secret_key = 'Our Secret! Keep It Safe'
 socketio = SocketIO(app)
 
 
