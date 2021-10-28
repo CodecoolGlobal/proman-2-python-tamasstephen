@@ -295,6 +295,7 @@ def delete_status_by_id(status_id):
     """).format(sql.Literal(status_id))
     return data_manager.execute_select(query, fetchall=False)
 
+
 def delete_card(card_id):
     query = sql.SQL("""
     DELETE FROM cards
@@ -303,3 +304,12 @@ def delete_card(card_id):
     """).format(card_id=sql.Literal(card_id))
     return data_manager.execute_select(query, fetchall=False)
 
+
+def get_last_board_id():
+    query = sql.SQL("""
+    SELECT id
+    FROM boards
+    ORDER BY id DESC
+    LIMIT 1
+    """)
+    return data_manager.execute_select(query, fetchall=False)

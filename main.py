@@ -1,8 +1,8 @@
-from flask import Flask, render_template, url_for, request, session, Response, redirect
+from flask import Flask, render_template, url_for, request, session, Response, redirect, jsonify
 from dotenv import load_dotenv
 from werkzeug import security
 from os import urandom
-
+from flask_socketio import SocketIO, emit
 
 from util import json_response
 import mimetypes
@@ -12,7 +12,7 @@ mimetypes.add_type('application/javascript', '.js')
 app = Flask(__name__)
 load_dotenv()
 app.secret_key = urandom(16)
-boards = len(queires.get_boards())
+socketio = SocketIO(app)
 
 
 @app.route("/")
@@ -45,8 +45,10 @@ def get_cards_for_board(board_id: int):
 @app.route("/api/create_board", methods=["POST"])
 @json_response
 def create_new_board():
+    fire_create_board_event()
     title = request.get_json()["title"]
-    return queires.create_new_board(title)
+    board_data = queires.create_new_board(title)
+    return board_data
 
 
 @app.route("/api/rename_board", methods=["POST"])
@@ -222,23 +224,19 @@ def delete_card_from_db():
     return queires.delete_card(int(card_id))
 
 
-@app.route('/api/fire-server-event')
-def listen_for_board_changes():
+@socketio.on('connect')
+def my_event():
+    emit('after connect', {'data': 'got it!'})
 
-    def listen_for_changes():
-        global boards
-        current_boards = boards
-        if current_boards != len(queires.get_boards()):
-            boards = len(queires.get_boards())
-            return f"\ndata: 'fire'\nevent: omg\n\n"
 
-    return Response(listen_for_changes(), content_type="text/event-stream")
+def fire_create_board_event():
+    socketio.emit('fire', {'data': 'got it!'}, broadcast=True)
 
 
 def main():
-    app.run(debug=True,
-            port=5001)
-
+    #app.run(debug=True,
+    #        port=5001)
+    socketio.run(app, port=5000, debug=True)
     # Serving the favicon
     with app.app_context():
         app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon/favicon.ico'))
